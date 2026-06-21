@@ -1,0 +1,2480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PowerGrid Pro – 3-Phase Energy Monitoring Systems</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   DESIGN TOKENS
+   ═══════════════════════════════════════════════ */
+:root {
+  --bg-dark:     #0A0F1E;
+  --bg-card:     #0E1628;
+  --bg-panel:    #121D35;
+  --bg-light:    #F4F7FF;
+  --blue-900:    #001B4E;
+  --blue-700:    #0033A0;
+  --blue-500:    #0057FF;
+  --blue-400:    #3D7EFF;
+  --blue-200:    #A8C4FF;
+  --green-500:   #00D68F;
+  --green-400:   #2EEDB5;
+  --green-300:   #7FFFD4;
+  --amber:       #FFB800;
+  --red:         #FF3B3B;
+  --text-white:  #FFFFFF;
+  --text-muted:  #8499CC;
+  --text-body:   #CBD5E1;
+  --border:      rgba(0,87,255,0.18);
+  --border-g:    rgba(0,214,143,0.22);
+  --glow-blue:   0 0 40px rgba(0,87,255,0.25);
+  --glow-green:  0 0 30px rgba(0,214,143,0.2);
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --font-main: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --nav-h: 68px;
+}
+
+/* ═══════════════════════════════════════════════
+   RESET + BASE
+   ═══════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font-main);
+  background: var(--bg-dark);
+  color: var(--text-body);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+img { display: block; max-width: 100%; }
+a { text-decoration: none; color: inherit; }
+button { border: none; cursor: pointer; font-family: inherit; }
+ul { list-style: none; }
+
+/* ═══════════════════════════════════════════════
+   PAGE SYSTEM
+   ═══════════════════════════════════════════════ */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ═══════════════════════════════════════════════
+   NAVBAR
+   ═══════════════════════════════════════════════ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  height: var(--nav-h);
+  background: rgba(10,15,30,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px;
+}
+.nav-brand {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 800; font-size: 1.2rem; color: var(--text-white);
+  cursor: pointer;
+}
+.nav-brand .logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--blue-500), var(--green-500));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+}
+.nav-brand span.accent { color: var(--green-500); }
+.nav-links {
+  display: flex; align-items: center; gap: 4px;
+}
+.nav-links a {
+  padding: 8px 16px; border-radius: 6px;
+  font-size: 0.875rem; font-weight: 500;
+  color: var(--text-muted);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--text-white);
+  background: rgba(0,87,255,0.12);
+}
+.nav-cta {
+  padding: 9px 22px;
+  background: var(--blue-500);
+  color: white;
+  border-radius: var(--r-sm);
+  font-size: 0.875rem; font-weight: 600;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.nav-cta:hover { background: var(--blue-400); transform: translateY(-1px); }
+
+/* ═══════════════════════════════════════════════
+   SHARED LAYOUT
+   ═══════════════════════════════════════════════ */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+.section { padding: 96px 0; }
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem; letter-spacing: 0.15em;
+  color: var(--green-500);
+  text-transform: uppercase; margin-bottom: 12px;
+}
+.section-title {
+  font-size: clamp(1.8rem, 3.5vw, 2.75rem);
+  font-weight: 800; color: var(--text-white);
+  line-height: 1.15; margin-bottom: 16px;
+}
+.section-sub {
+  font-size: 1.05rem; color: var(--text-muted);
+  max-width: 560px; line-height: 1.65;
+}
+.text-center { text-align: center; }
+.text-center .section-sub { margin: 0 auto; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; }
+.mt-8 { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.mt-48 { margin-top: 48px; }
+.mt-64 { margin-top: 64px; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 28px; border-radius: var(--r-sm);
+  font-weight: 600; font-size: 0.9rem;
+  transition: all 0.2s; cursor: pointer;
+}
+.btn-primary {
+  background: var(--blue-500); color: white;
+  box-shadow: 0 4px 20px rgba(0,87,255,0.35);
+}
+.btn-primary:hover { background: var(--blue-400); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,87,255,0.45); }
+.btn-outline {
+  background: transparent; color: var(--text-white);
+  border: 1.5px solid var(--border);
+}
+.btn-outline:hover { border-color: var(--blue-400); color: var(--blue-400); }
+.btn-green {
+  background: var(--green-500); color: var(--bg-dark);
+}
+.btn-green:hover { background: var(--green-400); transform: translateY(-2px); }
+
+/* Cards */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 28px;
+  transition: all 0.25s;
+}
+.card:hover {
+  border-color: rgba(0,87,255,0.4);
+  box-shadow: var(--glow-blue);
+  transform: translateY(-3px);
+}
+.card.green-hover:hover {
+  border-color: rgba(0,214,143,0.4);
+  box-shadow: var(--glow-green);
+}
+
+/* Tags */
+.tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 20px;
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.tag-blue { background: rgba(0,87,255,0.15); color: var(--blue-400); border: 1px solid rgba(0,87,255,0.25); }
+.tag-green { background: rgba(0,214,143,0.12); color: var(--green-500); border: 1px solid rgba(0,214,143,0.25); }
+.tag-amber { background: rgba(255,184,0,0.12); color: var(--amber); border: 1px solid rgba(255,184,0,0.25); }
+
+/* Dividers */
+.divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+/* ═══════════════════════════════════════════════
+   PAGE 1 — HOME
+   ═══════════════════════════════════════════════ */
+
+/* Hero */
+.hero {
+  min-height: 100vh;
+  padding-top: var(--nav-h);
+  background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,87,255,0.18) 0%, transparent 70%),
+              radial-gradient(ellipse 40% 40% at 80% 60%, rgba(0,214,143,0.08) 0%, transparent 60%),
+              var(--bg-dark);
+  display: flex; flex-direction: column; justify-content: center;
+  position: relative; overflow: hidden;
+}
+
+/* Grid background */
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(0,87,255,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,87,255,0.06) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+}
+
+.hero-inner {
+  position: relative; z-index: 2;
+  padding: 80px 40px 60px;
+  max-width: 1200px; margin: 0 auto; width: 100%;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 14px; border-radius: 20px;
+  background: rgba(0,214,143,0.1); border: 1px solid var(--border-g);
+  font-family: var(--font-mono); font-size: 0.75rem;
+  color: var(--green-500); letter-spacing: 0.1em;
+  margin-bottom: 28px;
+}
+.hero-eyebrow .pulse {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green-500);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+.hero h1 {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 900; color: var(--text-white);
+  line-height: 1.08; letter-spacing: -0.02em;
+  margin-bottom: 24px;
+}
+.hero h1 .gradient-text {
+  background: linear-gradient(90deg, var(--blue-400), var(--green-500));
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero p {
+  font-size: 1.15rem; color: var(--text-muted);
+  max-width: 520px; line-height: 1.7; margin-bottom: 40px;
+}
+.hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+
+/* Live stats strip */
+.hero-stats {
+  margin-top: 72px;
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+.hero-stat {
+  background: var(--bg-card);
+  padding: 22px 24px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.hero-stat .label {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  color: var(--text-muted); letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.hero-stat .value {
+  font-family: var(--font-mono); font-size: 1.6rem;
+  font-weight: 700; color: var(--text-white);
+  display: flex; align-items: baseline; gap: 4px;
+}
+.hero-stat .value .unit { font-size: 0.9rem; color: var(--text-muted); }
+.hero-stat .change {
+  font-size: 0.75rem; font-weight: 600;
+}
+.change.up { color: var(--green-500); }
+.change.down { color: var(--red); }
+
+/* Phase indicator – signature element */
+.phase-viz {
+  position: relative; width: 100%;
+  margin-top: 56px;
+}
+.phase-bars {
+  display: flex; gap: 3px;
+  height: 4px; border-radius: 2px; overflow: hidden;
+}
+.phase-bar { flex: 1; border-radius: 2px; }
+.phase-bar.r { background: #FF3B3B; animation: flicker-r 2.1s ease-in-out infinite; }
+.phase-bar.y { background: var(--amber); animation: flicker-y 2.1s 0.7s ease-in-out infinite; }
+.phase-bar.b { background: var(--blue-500); animation: flicker-b 2.1s 1.4s ease-in-out infinite; }
+@keyframes flicker-r { 0%,100%{opacity:1} 50%{opacity:0.5} }
+@keyframes flicker-y { 0%,100%{opacity:1} 50%{opacity:0.5} }
+@keyframes flicker-b { 0%,100%{opacity:1} 50%{opacity:0.5} }
+.phase-labels {
+  display: flex; gap: 3px;
+  margin-top: 6px;
+}
+.phase-labels span {
+  flex: 1; text-align: center;
+  font-family: var(--font-mono); font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
+/* Marquee strip */
+.marquee-section {
+  padding: 24px 0;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+.marquee-track {
+  display: flex; gap: 48px;
+  animation: marquee 22s linear infinite;
+  width: max-content;
+}
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.marquee-item {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 0.82rem; font-weight: 600;
+  color: var(--text-muted); white-space: nowrap;
+}
+.marquee-item .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green-500); flex-shrink: 0; }
+
+/* How it works */
+.steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; position: relative; }
+.steps::before {
+  content: '';
+  position: absolute; top: 28px; left: 12.5%; right: 12.5%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--blue-500), var(--green-500));
+  z-index: 0;
+}
+.step { padding: 0 16px; position: relative; z-index: 1; }
+.step-num {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--bg-dark);
+  border: 2px solid var(--blue-500);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 1rem; font-weight: 700;
+  color: var(--blue-400); margin-bottom: 20px;
+  box-shadow: 0 0 20px rgba(0,87,255,0.3);
+}
+.step h4 { font-size: 1rem; font-weight: 700; color: var(--text-white); margin-bottom: 8px; }
+.step p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+
+/* Testimonials */
+.testimonial-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+.testimonial-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 28px;
+}
+.stars { color: var(--amber); font-size: 0.9rem; margin-bottom: 14px; letter-spacing: 2px; }
+.testimonial-card blockquote {
+  font-size: 0.9rem; color: var(--text-body); line-height: 1.65;
+  font-style: italic; margin-bottom: 20px;
+}
+.testimonial-author { display: flex; align-items: center; gap: 12px; }
+.avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.9rem; color: white;
+  flex-shrink: 0;
+}
+.av1 { background: linear-gradient(135deg, #0057FF, #00D68F); }
+.av2 { background: linear-gradient(135deg, #7B2FFF, #0057FF); }
+.av3 { background: linear-gradient(135deg, #FF6B35, #FFB800); }
+.author-info .name { font-size: 0.85rem; font-weight: 700; color: var(--text-white); }
+.author-info .role { font-size: 0.75rem; color: var(--text-muted); }
+
+/* CTA Banner */
+.cta-banner {
+  background: linear-gradient(135deg, var(--blue-900), var(--bg-panel));
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 64px;
+  text-align: center; position: relative; overflow: hidden;
+}
+.cta-banner::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(0,87,255,0.12) 0%, transparent 70%);
+}
+.cta-banner h2 { font-size: 2.2rem; font-weight: 800; color: white; margin-bottom: 12px; position: relative; }
+.cta-banner p { color: var(--text-muted); margin-bottom: 32px; position: relative; }
+.cta-actions { display: flex; gap: 16px; justify-content: center; position: relative; }
+
+/* ═══════════════════════════════════════════════
+   PAGE 2 — PRODUCTS
+   ═══════════════════════════════════════════════ */
+.product-hero {
+  padding-top: calc(var(--nav-h) + 80px);
+  padding-bottom: 0;
+  background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(0,87,255,0.15) 0%, transparent 60%),
+              var(--bg-dark);
+}
+.product-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 56px; }
+.product-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  transition: all 0.25s;
+}
+.product-card:hover { transform: translateY(-4px); box-shadow: var(--glow-blue); border-color: rgba(0,87,255,0.4); }
+.product-img {
+  height: 200px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 5rem;
+  position: relative; overflow: hidden;
+}
+.product-img.blue-bg { background: linear-gradient(135deg, rgba(0,51,160,0.4), rgba(0,87,255,0.2)); }
+.product-img.green-bg { background: linear-gradient(135deg, rgba(0,100,70,0.4), rgba(0,214,143,0.15)); }
+.product-img.mixed-bg { background: linear-gradient(135deg, rgba(0,51,160,0.3), rgba(0,100,70,0.3)); }
+.product-body { padding: 24px; }
+.product-body h3 { font-size: 1.05rem; font-weight: 700; color: var(--text-white); margin-bottom: 8px; }
+.product-body p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px; }
+.product-specs { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+.spec-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 0.8rem;
+}
+.spec-row .sk { color: var(--text-muted); }
+.spec-row .sv { color: var(--text-white); font-family: var(--font-mono); font-weight: 600; }
+
+/* Tech specs table */
+.spec-table { width: 100%; border-collapse: collapse; margin-top: 32px; }
+.spec-table th {
+  text-align: left; padding: 12px 16px;
+  background: var(--bg-panel);
+  font-family: var(--font-mono); font-size: 0.72rem;
+  color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+.spec-table td {
+  padding: 12px 16px;
+  font-size: 0.85rem; color: var(--text-body);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.spec-table tr:hover td { background: rgba(0,87,255,0.04); }
+.spec-table td:first-child { color: var(--text-muted); }
+.spec-table td:nth-child(2) { font-family: var(--font-mono); color: var(--text-white); }
+
+/* ═══════════════════════════════════════════════
+   PAGE 3 — FEATURES
+   ═══════════════════════════════════════════════ */
+.features-hero {
+  padding-top: calc(var(--nav-h) + 80px);
+  background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(0,214,143,0.1) 0%, transparent 60%),
+              var(--bg-dark);
+  text-align: center;
+}
+.feature-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 56px; }
+.feature-icon {
+  width: 52px; height: 52px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; margin-bottom: 18px;
+}
+.fi-blue { background: rgba(0,87,255,0.12); border: 1px solid rgba(0,87,255,0.2); }
+.fi-green { background: rgba(0,214,143,0.1); border: 1px solid rgba(0,214,143,0.2); }
+.fi-amber { background: rgba(255,184,0,0.1); border: 1px solid rgba(255,184,0,0.2); }
+.card h3 { font-size: 1.05rem; font-weight: 700; color: var(--text-white); margin-bottom: 10px; }
+.card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.65; }
+.feature-list { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+.feature-list li { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--text-body); }
+.feature-list li::before { content: '✓'; color: var(--green-500); font-weight: 700; flex-shrink: 0; }
+
+/* Comparison table */
+.comparison-table { width: 100%; border-collapse: collapse; margin-top: 40px; }
+.comparison-table th {
+  padding: 16px 20px;
+  background: var(--bg-panel);
+  font-size: 0.85rem; font-weight: 700; color: var(--text-white);
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+.comparison-table th:first-child { text-align: left; }
+.comparison-table th.highlight { background: rgba(0,87,255,0.2); color: var(--blue-400); }
+.comparison-table td {
+  padding: 14px 20px;
+  font-size: 0.85rem; color: var(--text-body);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  text-align: center;
+}
+.comparison-table td:first-child { text-align: left; color: var(--text-muted); }
+.comparison-table td.highlight { background: rgba(0,87,255,0.05); }
+.comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+.comparison-table tr:hover td.highlight { background: rgba(0,87,255,0.08); }
+.check { color: var(--green-500); font-size: 1rem; }
+.cross { color: var(--red); font-size: 0.9rem; }
+.partial { color: var(--amber); }
+
+/* ═══════════════════════════════════════════════
+   PAGE 4 — DASHBOARD DEMO
+   ═══════════════════════════════════════════════ */
+.demo-hero {
+  padding-top: calc(var(--nav-h) + 60px);
+  padding-bottom: 60px;
+  background: var(--bg-dark);
+}
+/* The dashboard mockup */
+.dashboard-shell {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  margin-top: 40px;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+}
+.dashboard-topbar {
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.topbar-left { display: flex; align-items: center; gap: 20px; }
+.topbar-logo { font-weight: 800; font-size: 0.9rem; color: white; }
+.topbar-logo span { color: var(--green-500); }
+.topbar-tabs { display: flex; gap: 2px; }
+.topbar-tab {
+  padding: 6px 14px; border-radius: 6px;
+  font-size: 0.78rem; font-weight: 500; color: var(--text-muted);
+  cursor: pointer; transition: all 0.2s;
+}
+.topbar-tab.active { background: rgba(0,87,255,0.15); color: var(--blue-400); }
+.topbar-right { display: flex; align-items: center; gap: 16px; }
+.live-badge {
+  display: flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono); font-size: 0.7rem; color: var(--green-500);
+}
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green-500); animation: pulse 1.5s ease-in-out infinite; }
+.topbar-time { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted); }
+
+.dashboard-body { display: flex; }
+.dash-sidebar {
+  width: 56px; background: var(--bg-panel);
+  border-right: 1px solid var(--border);
+  padding: 16px 0;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.sidebar-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; cursor: pointer; transition: all 0.2s;
+}
+.sidebar-icon.active { background: rgba(0,87,255,0.2); }
+.sidebar-icon:hover { background: rgba(255,255,255,0.06); }
+
+.dash-main { flex: 1; padding: 24px; min-width: 0; }
+
+/* KPI row */
+.kpi-row { display: grid; grid-template-columns: repeat(6,1fr); gap: 12px; margin-bottom: 20px; }
+.kpi {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.kpi .k-label { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text-muted); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 6px; }
+.kpi .k-val { font-family: var(--font-mono); font-size: 1.15rem; font-weight: 700; color: var(--text-white); }
+.kpi .k-unit { font-size: 0.65rem; color: var(--text-muted); }
+.kpi .k-change { font-size: 0.68rem; margin-top: 4px; }
+
+/* Chart area */
+.dash-charts { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 20px; }
+.chart-panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+}
+.chart-panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.chart-panel-title { font-size: 0.82rem; font-weight: 600; color: var(--text-white); }
+.chart-panel-sub { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-muted); }
+
+/* SVG Waveform chart */
+.wave-chart { width: 100%; }
+
+/* Donut ring */
+.donut-container { display: flex; align-items: center; gap: 20px; }
+.donut-labels { display: flex; flex-direction: column; gap: 8px; }
+.donut-label { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; }
+.dl-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dl-name { color: var(--text-muted); }
+.dl-val { color: var(--text-white); font-weight: 600; font-family: var(--font-mono); }
+
+/* Phase table */
+.phase-table { width: 100%; border-collapse: collapse; }
+.phase-table th { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted); padding: 6px 8px; text-align: right; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); }
+.phase-table th:first-child { text-align: left; }
+.phase-table td { padding: 8px 8px; font-family: var(--font-mono); font-size: 0.78rem; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.03); }
+.phase-table td:first-child { text-align: left; font-weight: 600; }
+.phase-table tr:last-child td { border-bottom: none; }
+.ph-r td:first-child { color: #FF7070; }
+.ph-y td:first-child { color: var(--amber); }
+.ph-b td:first-child { color: var(--blue-400); }
+.val-ok { color: var(--green-500); }
+.val-warn { color: var(--amber); }
+.val-bad { color: var(--red); }
+
+/* Alerts */
+.alerts-panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+}
+.alert-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.alert-row:last-child { border-bottom: none; }
+.alert-icon { font-size: 0.85rem; flex-shrink: 0; margin-top: 2px; }
+.alert-body .al-msg { font-size: 0.78rem; color: var(--text-body); }
+.alert-body .al-time { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted); margin-top: 2px; }
+
+/* Bottom row */
+.dash-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* Energy bar */
+.energy-bars { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+.ebar { display: flex; flex-direction: column; gap: 4px; }
+.ebar-label { display: flex; justify-content: space-between; font-size: 0.72rem; }
+.ebar-label .el { color: var(--text-muted); }
+.ebar-label .ev { font-family: var(--font-mono); color: var(--text-white); font-weight: 600; }
+.ebar-track { height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.ebar-fill { height: 100%; border-radius: 3px; }
+.ef-blue { background: linear-gradient(90deg, var(--blue-500), var(--blue-400)); }
+.ef-green { background: linear-gradient(90deg, var(--green-500), var(--green-400)); }
+.ef-amber { background: linear-gradient(90deg, var(--amber), #FFD040); }
+
+/* Bill panel */
+.bill-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+.bill-item {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 12px;
+}
+.bill-item .bi-label { font-size: 0.68rem; color: var(--text-muted); margin-bottom: 4px; }
+.bill-item .bi-val { font-family: var(--font-mono); font-size: 1.05rem; font-weight: 700; color: var(--text-white); }
+.bill-item .bi-sub { font-size: 0.65rem; color: var(--text-muted); margin-top: 2px; }
+
+/* ═══════════════════════════════════════════════
+   PAGE 5 — PRICING
+   ═══════════════════════════════════════════════ */
+.pricing-hero {
+  padding-top: calc(var(--nav-h) + 80px);
+  text-align: center;
+  background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(0,87,255,0.12) 0%, transparent 60%),
+              var(--bg-dark);
+}
+.pricing-toggle {
+  display: inline-flex; align-items: center; gap: 12px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 30px; padding: 6px;
+  margin: 32px auto 0; font-size: 0.85rem;
+}
+.toggle-btn {
+  padding: 8px 20px; border-radius: 24px;
+  font-size: 0.85rem; font-weight: 600;
+  color: var(--text-muted); background: transparent;
+  transition: all 0.2s; cursor: pointer;
+}
+.toggle-btn.active { background: var(--blue-500); color: white; }
+.save-badge {
+  background: rgba(0,214,143,0.15); color: var(--green-500);
+  border: 1px solid var(--border-g);
+  padding: 3px 8px; border-radius: 12px;
+  font-size: 0.7rem; font-weight: 700;
+}
+.pricing-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 48px; }
+.pricing-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 36px 28px;
+  position: relative;
+  transition: all 0.25s;
+}
+.pricing-card:hover { transform: translateY(-4px); }
+.pricing-card.featured {
+  border-color: var(--blue-500);
+  box-shadow: var(--glow-blue);
+}
+.popular-badge {
+  position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+  background: linear-gradient(90deg, var(--blue-500), var(--blue-400));
+  color: white; padding: 4px 18px; border-radius: 20px;
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+.plan-name { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; }
+.plan-price {
+  font-family: var(--font-mono); font-size: 2.8rem; font-weight: 800;
+  color: var(--text-white); margin: 12px 0 4px;
+  display: flex; align-items: flex-start; gap: 2px;
+}
+.plan-price .currency { font-size: 1.2rem; margin-top: 10px; }
+.plan-price .per { font-size: 0.85rem; color: var(--text-muted); align-self: flex-end; margin-bottom: 8px; }
+.plan-desc { font-size: 0.83rem; color: var(--text-muted); margin-bottom: 28px; }
+.plan-features { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+.plan-feature { display: flex; align-items: flex-start; gap: 10px; font-size: 0.85rem; color: var(--text-body); }
+.plan-feature .pf-icon { flex-shrink: 0; margin-top: 2px; }
+.plan-feature.disabled { opacity: 0.35; }
+.divider-sm { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+.addon-note { font-size: 0.75rem; color: var(--text-muted); margin-top: 16px; text-align: center; }
+
+/* Add-ons */
+.addon-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-top: 40px; }
+.addon-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 20px;
+}
+.addon-card .a-icon { font-size: 1.5rem; margin-bottom: 10px; }
+.addon-card .a-name { font-size: 0.88rem; font-weight: 700; color: var(--text-white); margin-bottom: 4px; }
+.addon-card .a-desc { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px; }
+.addon-card .a-price { font-family: var(--font-mono); font-size: 0.9rem; font-weight: 700; color: var(--green-500); }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 4px; margin-top: 40px; max-width: 760px; margin-left: auto; margin-right: auto; }
+.faq-item {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+}
+.faq-q {
+  padding: 18px 22px;
+  display: flex; justify-content: space-between; align-items: center;
+  cursor: pointer;
+  font-size: 0.9rem; font-weight: 600; color: var(--text-white);
+}
+.faq-q:hover { color: var(--blue-400); }
+.faq-a {
+  padding: 0 22px 18px;
+  font-size: 0.85rem; color: var(--text-muted); line-height: 1.65;
+  display: none;
+}
+.faq-item.open .faq-a { display: block; }
+.faq-chevron { transition: transform 0.2s; flex-shrink: 0; }
+.faq-item.open .faq-chevron { transform: rotate(180deg); }
+
+/* ═══════════════════════════════════════════════
+   PAGE 6 — CONTACT
+   ═══════════════════════════════════════════════ */
+.contact-hero {
+  padding-top: calc(var(--nav-h) + 80px);
+  background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(0,214,143,0.08) 0%, transparent 60%),
+              var(--bg-dark);
+}
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-top: 60px; align-items: start; }
+.contact-info-cards { display: flex; flex-direction: column; gap: 16px; }
+.contact-info-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 22px;
+  display: flex; align-items: flex-start; gap: 16px;
+}
+.ci-icon {
+  width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+}
+.ci-blue { background: rgba(0,87,255,0.12); border: 1px solid rgba(0,87,255,0.2); }
+.ci-green { background: rgba(0,214,143,0.1); border: 1px solid rgba(0,214,143,0.2); }
+.ci-amber { background: rgba(255,184,0,0.1); border: 1px solid rgba(255,184,0,0.2); }
+.ci-body .ci-label { font-size: 0.72rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 4px; }
+.ci-body .ci-val { font-size: 0.9rem; color: var(--text-white); font-weight: 500; }
+.ci-body .ci-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+
+/* Form */
+.contact-form {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 36px;
+}
+.contact-form h3 { font-size: 1.3rem; font-weight: 700; color: var(--text-white); margin-bottom: 6px; }
+.contact-form .form-sub { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 28px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.form-group label { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); }
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--text-white);
+  padding: 11px 14px;
+  font-size: 0.875rem;
+  font-family: var(--font-main);
+  outline: none; width: 100%;
+  transition: border-color 0.2s;
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder { color: var(--text-muted); }
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus { border-color: var(--blue-500); }
+.form-group select option { background: var(--bg-panel); }
+.form-group textarea { resize: vertical; min-height: 110px; }
+.form-submit { width: 100%; margin-top: 8px; justify-content: center; font-size: 0.95rem; padding: 14px; }
+
+/* Map placeholder */
+.map-placeholder {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r-md); height: 220px; margin-top: 16px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; color: var(--text-muted); font-size: 0.85rem;
+}
+.map-placeholder .map-pin { font-size: 2.5rem; }
+
+/* Success message */
+.form-success {
+  display: none;
+  text-align: center; padding: 40px 20px;
+}
+.form-success .success-icon { font-size: 3rem; margin-bottom: 16px; }
+.form-success h4 { font-size: 1.2rem; font-weight: 700; color: var(--text-white); margin-bottom: 8px; }
+.form-success p { font-size: 0.85rem; color: var(--text-muted); }
+
+/* Coverage grid */
+.coverage-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-top: 40px; }
+.coverage-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 20px; text-align: center;
+}
+.coverage-card .c-icon { font-size: 2rem; margin-bottom: 10px; }
+.coverage-card .c-city { font-size: 0.9rem; font-weight: 700; color: var(--text-white); margin-bottom: 4px; }
+.coverage-card .c-sub { font-size: 0.75rem; color: var(--text-muted); }
+
+/* ═══════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════ */
+footer {
+  background: var(--bg-panel);
+  border-top: 1px solid var(--border);
+  padding: 60px 0 32px;
+}
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+.footer-brand .fb-logo { font-size: 1.2rem; font-weight: 800; color: white; margin-bottom: 12px; }
+.footer-brand .fb-logo span { color: var(--green-500); }
+.footer-brand p { font-size: 0.83rem; color: var(--text-muted); line-height: 1.65; max-width: 280px; }
+.footer-col h5 { font-size: 0.78rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 16px; }
+.footer-col ul { display: flex; flex-direction: column; gap: 8px; }
+.footer-col ul li a { font-size: 0.84rem; color: var(--text-muted); transition: color 0.2s; cursor: pointer; }
+.footer-col ul li a:hover { color: var(--blue-400); }
+.footer-bottom {
+  border-top: 1px solid var(--border); padding-top: 24px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-bottom p { font-size: 0.78rem; color: var(--text-muted); }
+.footer-socials { display: flex; gap: 12px; }
+.social-btn {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; color: var(--text-muted);
+  transition: all 0.2s; cursor: pointer;
+}
+.social-btn:hover { background: rgba(0,87,255,0.15); color: var(--blue-400); border-color: rgba(0,87,255,0.3); }
+
+/* WhatsApp FAB */
+.whatsapp-fab {
+  position: fixed; bottom: 28px; right: 28px; z-index: 999;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: #25D366;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.45);
+  cursor: pointer; transition: all 0.25s;
+  text-decoration: none;
+  animation: fab-bounce 3s ease-in-out infinite;
+}
+.whatsapp-fab:hover { transform: scale(1.1); box-shadow: 0 8px 30px rgba(37,211,102,0.6); }
+@keyframes fab-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.whatsapp-fab:hover { animation: none; }
+
+/* ═══════════════════════════════════════════════
+   UTILITIES
+   ═══════════════════════════════════════════════ */
+.badge-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+
+/* Animated counter */
+.counter { font-family: var(--font-mono); }
+
+/* Section alternating bg */
+.section-alt { background: var(--bg-card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+/* Mobile hamburger – simplified */
+.mobile-menu-btn { display: none; }
+
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .container { padding: 0 20px; }
+  .grid-2, .grid-3, .grid-4, .steps { grid-template-columns: 1fr; }
+  .hero-stats { grid-template-columns: 1fr 1fr; }
+  .product-grid, .feature-cards, .pricing-grid, .testimonial-grid { grid-template-columns: 1fr; }
+  .contact-grid, .footer-grid { grid-template-columns: 1fr; }
+  .kpi-row { grid-template-columns: repeat(3,1fr); }
+  .dash-charts { grid-template-columns: 1fr; }
+  .dash-bottom { grid-template-columns: 1fr; }
+  .steps::before { display: none; }
+  .hero h1 { font-size: 2rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-brand" onclick="showPage('home')">
+    <div class="logo-icon">⚡</div>
+    PowerGrid<span class="accent">Pro</span>
+  </div>
+  <div class="nav-links">
+    <a onclick="showPage('home')" id="nav-home" class="active">Home</a>
+    <a onclick="showPage('products')" id="nav-products">Products</a>
+    <a onclick="showPage('features')" id="nav-features">Features</a>
+    <a onclick="showPage('demo')" id="nav-demo">Dashboard Demo</a>
+    <a onclick="showPage('pricing')" id="nav-pricing">Pricing</a>
+    <a onclick="showPage('contact')" id="nav-contact">Contact</a>
+  </div>
+  <button class="nav-cta" onclick="showPage('contact')">Get a Quote</button>
+</nav>
+
+<!-- WhatsApp FAB -->
+<a class="whatsapp-fab" href="https://wa.me/919876543210?text=Hi,%20I%20am%20interested%20in%20PowerGrid%20Pro%20Energy%20Monitoring%20System" target="_blank" title="Chat on WhatsApp">💬</a>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 1 — HOME
+═══════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">
+        <span class="pulse"></span>
+        <span id="e-eyebrow">LIVE INDUSTRIAL IOT MONITORING</span>
+      </div>
+      <h1>
+        <span id="e-hero-h1">Know Every Watt.</span><br>
+        <span id="e-hero-h2">Control Every</span><br>
+        <span class="gradient-text" id="e-hero-h3">Phase.</span>
+      </h1>
+      <p id="e-hero-desc">PowerGrid Pro delivers real-time 3-phase energy monitoring for textile mills, factories, and industrial plants — from voltage and current to projected electricity bills, all visible on one dashboard.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="showPage('demo')">▶ &nbsp;Live Dashboard Demo</button>
+        <button class="btn btn-outline" onclick="showPage('products')">View Products →</button>
+      </div>
+
+      <!-- Live stats -->
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="label">R-Phase Voltage</div>
+          <div class="value"><span id="v-r">233.4</span><span class="unit">V</span></div>
+          <div class="change up" id="vr-change">▲ +0.2%</div>
+        </div>
+        <div class="hero-stat">
+          <div class="label">Total Current</div>
+          <div class="value"><span id="curr">42.8</span><span class="unit">A</span></div>
+          <div class="change up" id="curr-change">▲ Balanced</div>
+        </div>
+        <div class="hero-stat">
+          <div class="label">Active Power</div>
+          <div class="value"><span id="pwr">18.6</span><span class="unit">kW</span></div>
+          <div class="change down" id="pwr-change">▼ -1.3%</div>
+        </div>
+        <div class="hero-stat">
+          <div class="label">Today kWh</div>
+          <div class="value"><span id="kwh">247</span><span class="unit">kWh</span></div>
+          <div class="change up" id="kwh-change">▲ On Track</div>
+        </div>
+      </div>
+
+      <div class="phase-viz">
+        <div class="phase-bars">
+          <div class="phase-bar r"></div>
+          <div class="phase-bar y"></div>
+          <div class="phase-bar b"></div>
+        </div>
+        <div class="phase-labels">
+          <span>R-Phase 233.4V</span>
+          <span>Y-Phase 231.8V</span>
+          <span>B-Phase 232.6V</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Marquee -->
+  <div class="marquee-section">
+    <div class="marquee-track">
+      <div class="marquee-item"><span class="dot"></span>3-Phase Voltage Monitoring</div>
+      <div class="marquee-item"><span class="dot"></span>Current & Power Factor</div>
+      <div class="marquee-item"><span class="dot"></span>kWh Energy Tracking</div>
+      <div class="marquee-item"><span class="dot"></span>Electricity Bill Projection</div>
+      <div class="marquee-item"><span class="dot"></span>Earth Fault Detection</div>
+      <div class="marquee-item"><span class="dot"></span>Cloud Dashboard</div>
+      <div class="marquee-item"><span class="dot"></span>Mobile App Support</div>
+      <div class="marquee-item"><span class="dot"></span>SMS & Email Alerts</div>
+      <div class="marquee-item"><span class="dot"></span>RS-485 / Modbus</div>
+      <div class="marquee-item"><span class="dot"></span>PZEM-004T Integration</div>
+      <!-- duplicate for seamless loop -->
+      <div class="marquee-item"><span class="dot"></span>3-Phase Voltage Monitoring</div>
+      <div class="marquee-item"><span class="dot"></span>Current & Power Factor</div>
+      <div class="marquee-item"><span class="dot"></span>kWh Energy Tracking</div>
+      <div class="marquee-item"><span class="dot"></span>Electricity Bill Projection</div>
+      <div class="marquee-item"><span class="dot"></span>Earth Fault Detection</div>
+      <div class="marquee-item"><span class="dot"></span>Cloud Dashboard</div>
+      <div class="marquee-item"><span class="dot"></span>Mobile App Support</div>
+      <div class="marquee-item"><span class="dot"></span>SMS & Email Alerts</div>
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <section class="section">
+    <div class="container">
+      <div class="text-center" style="margin-bottom:64px">
+        <div class="section-label">How It Works</div>
+        <div class="section-title">From Sensor to Dashboard<br>in Milliseconds</div>
+        <p class="section-sub mt-8">Our end-to-end system connects your industrial panels directly to a cloud dashboard with no manual data entry.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <h4 id="e-step1-h">Install Sensor Unit</h4>
+          <p id="e-step1-p">Clip-on CT sensors and voltage taps mount in your MCC panel in under 2 hours — no shutdown required.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <h4 id="e-step2-h">Edge Data Logger</h4>
+          <p id="e-step2-p">ESP32/Raspberry Pi logger samples all 3 phases at 1-second intervals and preprocesses the data locally.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <h4 id="e-step3-h">Secure Cloud Upload</h4>
+          <p id="e-step3-p">Encrypted data streams to our industrial cloud via WiFi, 4G, or Ethernet with offline buffering.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <h4 id="e-step4-h">Live Dashboard & Alerts</h4>
+          <p id="e-step4-p">View real-time power data, receive SMS/email alerts, and generate automated energy reports.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-label">Customer Benefits</div>
+      <div class="grid-2">
+        <div>
+          <div class="section-title" id="e-ben-title">Built for the Shop Floor,<br>Readable in the Boardroom</div>
+          <p class="section-sub mt-8" id="e-ben-sub">Engineering teams get raw phase-by-phase data. Management gets cost projections and efficiency KPIs. One platform, two views.</p>
+          <div class="feature-list mt-24" style="list-style:none">
+            <ul>
+              <li>Reduce electricity bills by 15–30% through load analysis</li>
+              <li>Detect phase imbalance before motors fail</li>
+              <li>Prove energy savings to TANGEDCO for incentive claims</li>
+              <li>No dedicated IT team required — fully managed service</li>
+              <li>Daily PDF reports delivered to your inbox automatically</li>
+              <li>Integration with existing PLC and SCADA systems</li>
+            </ul>
+          </div>
+          <div style="margin-top:32px; display:flex; gap:12px">
+            <button class="btn btn-primary" onclick="showPage('features')">Explore Features</button>
+            <button class="btn btn-outline" onclick="showPage('pricing')">See Pricing</button>
+          </div>
+        </div>
+        <div>
+          <!-- Visual benefit cards -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px">
+            <div class="card green-hover" style="grid-column:1/-1">
+              <div style="font-size:2rem;margin-bottom:10px">📉</div>
+              <div style="font-size:1.6rem;font-weight:800;color:var(--green-500);font-family:var(--font-mono)">₹2.4L</div>
+              <div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px">Average annual savings per monitored machine at KPR Mill, Coimbatore</div>
+            </div>
+            <div class="card">
+              <div style="font-size:1.4rem;margin-bottom:8px">⚡</div>
+              <div style="font-size:1.3rem;font-weight:700;color:var(--text-white);font-family:var(--font-mono)">1 sec</div>
+              <div style="font-size:0.78rem;color:var(--text-muted)">Data sampling interval</div>
+            </div>
+            <div class="card">
+              <div style="font-size:1.4rem;margin-bottom:8px">📡</div>
+              <div style="font-size:1.3rem;font-weight:700;color:var(--text-white);font-family:var(--font-mono)">99.7%</div>
+              <div style="font-size:0.78rem;color:var(--text-muted)">Platform uptime SLA</div>
+            </div>
+            <div class="card">
+              <div style="font-size:1.4rem;margin-bottom:8px">🏭</div>
+              <div style="font-size:1.3rem;font-weight:700;color:var(--text-white);font-family:var(--font-mono)">200+</div>
+              <div style="font-size:0.78rem;color:var(--text-muted)">Machines monitored</div>
+            </div>
+            <div class="card">
+              <div style="font-size:1.4rem;margin-bottom:8px">🔔</div>
+              <div style="font-size:1.3rem;font-weight:700;color:var(--text-white);font-family:var(--font-mono)">&lt;30s</div>
+              <div style="font-size:0.78rem;color:var(--text-muted)">Alert delivery time</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="section">
+    <div class="container">
+      <div class="text-center" style="margin-bottom:48px">
+        <div class="section-label">Trusted By Industry</div>
+        <div class="section-title">What Mill Engineers Say</div>
+      </div>
+      <div class="testimonial-grid">
+        <div class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <blockquote id="e-t1-quote">"PowerGrid Pro helped us identify a 12% load imbalance on Line 3 that was causing motor overheating. Fixed it within a week and saved ₹80,000 in repair costs."</blockquote>
+          <div class="testimonial-author">
+            <div class="avatar av1" id="e-av1">RK</div>
+            <div class="author-info">
+              <div class="name" id="e-t1-name">Rajesh Kumar</div>
+              <div class="role" id="e-t1-role">Electrical Engineer, Aarti Spinning Mills</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <blockquote id="e-t2-quote">"The daily PDF reports are exactly what our management needs. No more manual meter readings — everything is automated and the bill projections are accurate to within 2%."</blockquote>
+          <div class="testimonial-author">
+            <div class="avatar av2" id="e-av2">SS</div>
+            <div class="author-info">
+              <div class="name" id="e-t2-name">Suresh Selvam</div>
+              <div class="role" id="e-t2-role">Plant Manager, KPR Mill Ltd</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <blockquote id="e-t3-quote">"Setup took less than 3 hours on a Sunday. By Monday morning we had live data on the cloud dashboard. The WhatsApp alerts are a game changer for our maintenance team."</blockquote>
+          <div class="testimonial-author">
+            <div class="avatar av3" id="e-av3">VP</div>
+            <div class="author-info">
+              <div class="name" id="e-t3-name">Venkat Prasad</div>
+              <div class="role" id="e-t3-role">Maintenance Head, Jay Jay Mills</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section" style="padding-bottom:120px">
+    <div class="container">
+      <div class="cta-banner">
+        <h2 id="e-cta-h2">Ready to Monitor Your First Machine?</h2>
+        <p id="e-cta-p">Free 30-day pilot installation. No upfront cost. Engineers on-site in Coimbatore and Tirupur.</p>
+        <div class="cta-actions">
+          <button class="btn btn-primary" onclick="showPage('contact')">Request Free Pilot</button>
+          <button class="btn btn-outline" onclick="showPage('demo')">See the Dashboard First</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="fb-logo">PowerGrid<span>Pro</span></div>
+          <p id="e-footer-tag">Industrial IoT energy monitoring systems for textile mills and manufacturing plants across Tamil Nadu.</p>
+        </div>
+        <div class="footer-col">
+          <h5>Products</h5>
+          <ul>
+            <li><a onclick="showPage('products')">PG-3M Energy Logger</a></li>
+            <li><a onclick="showPage('products')">PG-Cloud Gateway</a></li>
+            <li><a onclick="showPage('products')">PG-Mobile Dashboard</a></li>
+            <li><a onclick="showPage('products')">Earth Fault Monitor</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a>About Us</a></li>
+            <li><a>Case Studies</a></li>
+            <li><a>Documentation</a></li>
+            <li><a onclick="showPage('contact')">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Support</h5>
+          <ul>
+            <li><a>Installation Guide</a></li>
+            <li><a>API Reference</a></li>
+            <li><a>Service Center</a></li>
+            <li><a>WhatsApp Support</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p id="e-footer-copy">© 2025 PowerGrid Pro. All rights reserved. | Made in Coimbatore 🇮🇳</p>
+        <div class="footer-socials">
+          <div class="social-btn">in</div>
+          <div class="social-btn">tw</div>
+          <div class="social-btn">yt</div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 2 — PRODUCTS
+═══════════════════════════════════════════ -->
+<div id="page-products" class="page">
+  <section class="product-hero section">
+    <div class="container">
+      <div class="section-label">Hardware & Software</div>
+      <div class="section-title">Complete Energy Monitoring<br>Ecosystem</div>
+      <p class="section-sub mt-8">Every component designed for Tamil Nadu's industrial environment — high temperature tolerance, dustproof enclosures, and support for TNEB tariff structures.</p>
+
+      <div class="product-grid">
+        <!-- Product 1 -->
+        <div class="product-card">
+          <div class="product-img blue-bg">🔌</div>
+          <div class="product-body">
+            <div class="badge-row" style="margin-bottom:12px"><span class="tag tag-blue">HARDWARE</span><span class="tag tag-green">● LIVE</span></div>
+            <h3 id="e-p1-name">PG-3M Energy Logger</h3>
+            <p id="e-p1-desc">ESP32-based 3-phase data logger with PZEM-004T v3.0 integration. Measures voltage, current, power, energy, frequency, and power factor across all 3 phases simultaneously.</p>
+            <div class="product-specs">
+              <div class="spec-row"><span class="sk">Voltage Range</span><span class="sv">80 – 260V AC</span></div>
+              <div class="spec-row"><span class="sk">Current Range</span><span class="sv">0 – 100A (CT)</span></div>
+              <div class="spec-row"><span class="sk">Accuracy</span><span class="sv">±0.5%</span></div>
+              <div class="spec-row"><span class="sk">Sampling Rate</span><span class="sv">1 second</span></div>
+              <div class="spec-row"><span class="sk">Communication</span><span class="sv">WiFi / RS-485</span></div>
+              <div class="spec-row"><span class="sk">Enclosure</span><span class="sv">IP54 DIN Rail</span></div>
+            </div>
+            <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="showPage('contact')">Request Datasheet</button>
+          </div>
+        </div>
+        <!-- Product 2 -->
+        <div class="product-card">
+          <div class="product-img green-bg">☁️</div>
+          <div class="product-body">
+            <div class="badge-row" style="margin-bottom:12px"><span class="tag tag-blue">GATEWAY</span><span class="tag tag-amber">4G + WiFi</span></div>
+            <h3 id="e-p2-name">PG-Cloud Gateway</h3>
+            <p id="e-p2-desc">Raspberry Pi 5 based industrial edge gateway. Aggregates data from up to 32 logger nodes, buffers offline data, and provides local LCD display + web server.</p>
+            <div class="product-specs">
+              <div class="spec-row"><span class="sk">CPU</span><span class="sv">RPi 5 / 8GB RAM</span></div>
+              <div class="spec-row"><span class="sk">Storage</span><span class="sv">64GB eMMC</span></div>
+              <div class="spec-row"><span class="sk">Connectivity</span><span class="sv">4G LTE + Ethernet</span></div>
+              <div class="spec-row"><span class="sk">Nodes Supported</span><span class="sv">Up to 32</span></div>
+              <div class="spec-row"><span class="sk">Power Supply</span><span class="sv">5V/5A Official RPi</span></div>
+              <div class="spec-row"><span class="sk">Operating Temp</span><span class="sv">-10°C to +70°C</span></div>
+            </div>
+            <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="showPage('contact')">Request Datasheet</button>
+          </div>
+        </div>
+        <!-- Product 3 -->
+        <div class="product-card">
+          <div class="product-img mixed-bg">📱</div>
+          <div class="product-body">
+            <div class="badge-row" style="margin-bottom:12px"><span class="tag tag-green">SOFTWARE</span><span class="tag tag-blue">Android + iOS</span></div>
+            <h3 id="e-p3-name">PG-Mobile Dashboard</h3>
+            <p id="e-p3-desc">Native mobile app with real-time push notifications, phase-by-phase KPIs, energy consumption graphs, bill prediction, and one-tap report sharing via WhatsApp.</p>
+            <div class="product-specs">
+              <div class="spec-row"><span class="sk">Platform</span><span class="sv">Android 8+ / iOS 14+</span></div>
+              <div class="spec-row"><span class="sk">Refresh Rate</span><span class="sv">Live (WebSocket)</span></div>
+              <div class="spec-row"><span class="sk">Offline Mode</span><span class="sv">Last 24h cached</span></div>
+              <div class="spec-row"><span class="sk">Alert Types</span><span class="sv">Push / SMS / WA</span></div>
+              <div class="spec-row"><span class="sk">Reports</span><span class="sv">Daily PDF auto-send</span></div>
+              <div class="spec-row"><span class="sk">Users</span><span class="sv">Unlimited per site</span></div>
+            </div>
+            <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="showPage('demo')">View Demo Dashboard</button>
+          </div>
+        </div>
+        <!-- Product 4 -->
+        <div class="product-card">
+          <div class="product-img blue-bg">⚠️</div>
+          <div class="product-body">
+            <div class="badge-row" style="margin-bottom:12px"><span class="tag tag-amber">SAFETY</span><span class="tag tag-blue">HARDWARE</span></div>
+            <h3 id="e-p4-name">Earth Fault Monitor</h3>
+            <p id="e-p4-desc">Real-time earth leakage detection with 0–30mA sensitivity. Integrates with PG-3M logger to provide combined power + safety monitoring in a single enclosure.</p>
+            <div class="product-specs">
+              <div class="spec-row"><span class="sk">Sensitivity</span><span class="sv">0 – 30mA</span></div>
+              <div class="spec-row"><span class="sk">Response Time</span><span class="sv">&lt; 40ms</span></div>
+              <div class="spec-row"><span class="sk">Output</span><span class="sv">Relay + Digital</span></div>
+              <div class="spec-row"><span class="sk">Display</span><span class="sv">LCD 16x2 (I2C)</span></div>
+              <div class="spec-row"><span class="sk">Alert</span><span class="sv">Buzzer + SMS</span></div>
+              <div class="spec-row"><span class="sk">Standards</span><span class="sv">IEC 62020</span></div>
+            </div>
+            <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="showPage('contact')">Request Datasheet</button>
+          </div>
+        </div>
+        <!-- Product 5 -->
+        <div class="product-card">
+          <div class="product-img green-bg">📊</div>
+          <div class="product-body">
+            <div class="badge-row" style="margin-bottom:12px"><span class="tag tag-green">SOFTWARE</span><span class="tag tag-blue">CLOUD</span></div>
+            <h3 id="e-p5-name">PG-Analytics Suite</h3>
+            <p id="e-p5-desc">Advanced energy analytics with TNEB tariff calculator, peak demand tracking, load shedding scheduler, and automated TANGEDCO-format energy audit reports.</p>
+            <div class="product-specs">
+              <div class="spec-row"><span class="sk">Data Retention</span><span class="sv">5 years cloud</span></div>
+              <div class="spec-row"><span class="sk">Tariff Engine</span><span class="sv">TNEB HT/LT/ToD</span></div>
+              <div class="spec-row"><span class="sk">Report Formats</span><span class="sv">PDF / Excel / API</span></div>
+              <div class="spec-row"><span class="sk">ML Forecasting</span><span class="sv">7-day bill forecast</span></div>
+              <div class="spec-row"><span class="sk">Multi-site</span><span class="sv">Unlimited plants</span></div>
+              <div class="spec-row"><span class="sk">Integrations</span><span class="sv">ERP / SCADA / REST</span></div>
+            </div>
+            <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="showPage('demo')">View Demo</button>
+          </div>
+        </div>
+        <!-- Product 6 -->
+        <div class="product-card">
+          <div class="product-img mixed-bg">🔧</div>
+          <div class="product-body">
+            <div class="badge-row" style="margin-bottom:12px"><span class="tag tag-blue">SERVICE</span><span class="tag tag-amber">ON-SITE</span></div>
+            <h3 id="e-p6-name">AMC Service Plan</h3>
+            <p id="e-p6-desc">Annual Maintenance Contract with quarterly calibration, firmware updates, 4-hour on-site SLA in Coimbatore/Tirupur, and 24×7 WhatsApp support.</p>
+            <div class="product-specs">
+              <div class="spec-row"><span class="sk">Response SLA</span><span class="sv">4 hours on-site</span></div>
+              <div class="spec-row"><span class="sk">Coverage</span><span class="sv">CBE / Tirupur / Salem</span></div>
+              <div class="spec-row"><span class="sk">Calibration</span><span class="sv">Quarterly</span></div>
+              <div class="spec-row"><span class="sk">Updates</span><span class="sv">OTA firmware</span></div>
+              <div class="spec-row"><span class="sk">Support</span><span class="sv">24×7 WhatsApp</span></div>
+              <div class="spec-row"><span class="sk">Replacement</span><span class="sv">Next-day swap</span></div>
+            </div>
+            <button class="btn btn-green" style="width:100%;justify-content:center" onclick="showPage('pricing')">View AMC Pricing</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tech specs comparison -->
+      <div style="margin-top:80px">
+        <div class="section-label">Technical Specifications</div>
+        <div class="section-title">PG-3M Logger — Full Spec Sheet</div>
+        <table class="spec-table" style="margin-top:24px; background:var(--bg-card); border-radius:var(--r-md); overflow:hidden; border:1px solid var(--border)">
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Specification</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Voltage Measurement</td><td>80 – 260V AC RMS</td><td>Per phase, direct tap</td></tr>
+            <tr><td>Current Measurement</td><td>0 – 100A AC RMS</td><td>Via split-core CT</td></tr>
+            <tr><td>Active Power</td><td>0 – 23,000W</td><td>±0.5% accuracy</td></tr>
+            <tr><td>Reactive Power</td><td>0 – 23,000VAR</td><td>Calculated from PF</td></tr>
+            <tr><td>Apparent Power</td><td>0 – 23,000VA</td><td>–</td></tr>
+            <tr><td>Energy (kWh)</td><td>0 – 9999.99 kWh</td><td>Persistent storage</td></tr>
+            <tr><td>Power Factor</td><td>0.00 – 1.00</td><td>Leading/lagging</td></tr>
+            <tr><td>Frequency</td><td>45 – 65 Hz</td><td>±0.1 Hz</td></tr>
+            <tr><td>Communication</td><td>UART / RS-485 / WiFi</td><td>Modbus RTU supported</td></tr>
+            <tr><td>Data Interface</td><td>WebSocket + REST API</td><td>JSON format</td></tr>
+            <tr><td>Display</td><td>Optional 16×2 LCD I2C</td><td>SDA/SCL configurable</td></tr>
+            <tr><td>Alert Output</td><td>Relay + GPIO digital</td><td>3.3V logic</td></tr>
+            <tr><td>Operating Voltage</td><td>5V DC / 500mA</td><td>USB-C or terminal</td></tr>
+            <tr><td>Enclosure</td><td>IP54 DIN Rail 4M</td><td>ABS plastic, 70°C rated</td></tr>
+            <tr><td>Certifications</td><td>CE, RoHS</td><td>BIS registration in process</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 3 — FEATURES
+═══════════════════════════════════════════ -->
+<div id="page-features" class="page">
+  <section class="features-hero section">
+    <div class="container">
+      <div class="section-label">Platform Features</div>
+      <div class="section-title">Everything You Need to<br>Master Your Energy Costs</div>
+      <p class="section-sub" style="margin:12px auto 0">Six core monitoring modules. One unified dashboard. Built specifically for Indian industrial tariff structures and field conditions.</p>
+
+      <div class="feature-cards">
+        <!-- Feature 1 -->
+        <div class="card green-hover">
+          <div class="feature-icon fi-blue">⚡</div>
+          <h3 id="e-f1-title">Real-Time Voltage Monitoring</h3>
+          <p id="e-f1-desc">Phase-to-phase and phase-to-neutral voltage across all 3 phases, updated every second. Instant alerts on sag, swell, or imbalance beyond your configured thresholds.</p>
+          <ul class="feature-list">
+            <li>R, Y, B phase individual tracking</li>
+            <li>Phase imbalance % calculation</li>
+            <li>Voltage sag/swell event logging</li>
+            <li>Historical min/max trend charts</li>
+            <li>TNEB supply quality compliance report</li>
+          </ul>
+        </div>
+        <!-- Feature 2 -->
+        <div class="card green-hover">
+          <div class="feature-icon fi-green">🔄</div>
+          <h3 id="e-f2-title">Current Monitoring</h3>
+          <p id="e-f2-desc">Non-invasive clip-on CT sensors measure per-phase current with ±0.5% accuracy. Track motor load, detect overcurrent, and catch unbalanced loading before it damages equipment.</p>
+          <ul class="feature-list">
+            <li>Per-phase current (A RMS)</li>
+            <li>Neutral current monitoring</li>
+            <li>Overcurrent alarm with delay timer</li>
+            <li>Load profile 24h / 7d / 30d</li>
+            <li>Motor health trend analysis</li>
+          </ul>
+        </div>
+        <!-- Feature 3 -->
+        <div class="card green-hover">
+          <div class="feature-icon fi-blue">💡</div>
+          <h3 id="e-f3-title">Power Monitoring</h3>
+          <p id="e-f3-desc">Active (kW), reactive (kVAR), and apparent (kVA) power for each phase and total system. Power factor correction suggestions included in weekly reports.</p>
+          <ul class="feature-list">
+            <li>Active / Reactive / Apparent power</li>
+            <li>Power factor per phase and total</li>
+            <li>Peak demand tracking (kVA)</li>
+            <li>Harmonic distortion indicator</li>
+            <li>Penalty-free PF recommendations</li>
+          </ul>
+        </div>
+        <!-- Feature 4 -->
+        <div class="card green-hover">
+          <div class="feature-icon fi-amber">📈</div>
+          <h3 id="e-f4-title">Energy Consumption</h3>
+          <p id="e-f4-desc">Cumulative kWh tracking per machine, per shift, per day, week, and month. Compare energy intensity across production lines to find and fix energy waste.</p>
+          <ul class="feature-list">
+            <li>Per-machine kWh metering</li>
+            <li>Shift-wise energy breakdown</li>
+            <li>Specific Energy Consumption (SEC)</li>
+            <li>kWh per kg yarn / kWh per piece</li>
+            <li>ISO 50001 compatible reporting</li>
+          </ul>
+        </div>
+        <!-- Feature 5 -->
+        <div class="card green-hover">
+          <div class="feature-icon fi-green">💰</div>
+          <h3 id="e-f5-title">Electricity Bill Monitoring</h3>
+          <p id="e-f5-desc">Live bill projection based on TNEB HT/LT/ToD tariff rates. Know your electricity cost at any moment of the billing month — no surprises when the bill arrives.</p>
+          <ul class="feature-list">
+            <li>TNEB LT/HT tariff rate engine</li>
+            <li>Time-of-Day (ToD) slot tracking</li>
+            <li>Peak demand charge projection</li>
+            <li>Month-to-date bill accumulation</li>
+            <li>Budget alert at configurable % threshold</li>
+          </ul>
+        </div>
+        <!-- Feature 6 -->
+        <div class="card green-hover">
+          <div class="feature-icon fi-blue">☁️</div>
+          <h3 id="e-f6-title">Cloud Dashboard & Mobile App</h3>
+          <p id="e-f6-desc">Browser-based dashboard accessible from anywhere. Native Android and iOS apps with push notifications. WhatsApp bot for quick status queries without opening the app.</p>
+          <ul class="feature-list">
+            <li>Multi-site multi-machine view</li>
+            <li>Role-based access (Admin/Engineer/Viewer)</li>
+            <li>Native Android + iOS apps</li>
+            <li>WhatsApp status bot</li>
+            <li>Automated PDF reports via email</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="text-center" style="margin-bottom:40px">
+        <div class="section-label">Why PowerGrid Pro</div>
+        <div class="section-title">How We Compare</div>
+      </div>
+      <div style="overflow-x:auto; border-radius:var(--r-md); border:1px solid var(--border)">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th class="highlight">PowerGrid Pro</th>
+              <th>Generic IoT Logger</th>
+              <th>SCADA System</th>
+              <th>Manual Metering</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>3-Phase Monitoring</td><td class="highlight"><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="partial">Partial</span></td></tr>
+            <tr><td>TNEB Tariff Calculator</td><td class="highlight"><span class="check">✓</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td></tr>
+            <tr><td>Real-Time Cloud Dashboard</td><td class="highlight"><span class="check">✓</span></td><td><span class="partial">Basic</span></td><td><span class="check">✓</span></td><td><span class="cross">✗</span></td></tr>
+            <tr><td>Mobile App (Android/iOS)</td><td class="highlight"><span class="check">✓</span></td><td><span class="partial">Android only</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td></tr>
+            <tr><td>WhatsApp Alerts</td><td class="highlight"><span class="check">✓</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td></tr>
+            <tr><td>Earth Fault Detection</td><td class="highlight"><span class="check">✓</span></td><td><span class="cross">✗</span></td><td><span class="partial">Add-on</span></td><td><span class="cross">✗</span></td></tr>
+            <tr><td>Automated PDF Reports</td><td class="highlight"><span class="check">✓</span></td><td><span class="cross">✗</span></td><td><span class="partial">Manual</span></td><td><span class="cross">✗</span></td></tr>
+            <tr><td>Bill Projection (kWh→₹)</td><td class="highlight"><span class="check">✓</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td></tr>
+            <tr><td>On-site Support in CBE/Tirupur</td><td class="highlight"><span class="check">✓</span></td><td><span class="cross">✗</span></td><td><span class="partial">Vendor</span></td><td><span class="check">✓</span></td></tr>
+            <tr><td>Setup Time</td><td class="highlight" style="color:var(--green-500);font-weight:700">2 Hours</td><td>1–2 Days</td><td>2–6 Weeks</td><td>None</td></tr>
+            <tr><td>Typical Annual Cost</td><td class="highlight" style="color:var(--green-500);font-weight:700">₹24,000–60,000</td><td>₹15,000+</td><td>₹5L–20L</td><td>₹0 (hidden costs)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Alert types -->
+  <section class="section">
+    <div class="container">
+      <div class="grid-2">
+        <div>
+          <div class="section-label">Alert System</div>
+          <div class="section-title">Never Miss a Critical<br>Power Event</div>
+          <p class="section-sub mt-8">Configurable thresholds for every parameter. Alerts delivered via push notification, SMS, email, and WhatsApp — in that order of speed.</p>
+          <div style="display:flex; flex-direction:column; gap:12px; margin-top:32px">
+            <div class="card" style="display:flex;align-items:center;gap:16px;padding:18px">
+              <div style="font-size:1.4rem">🔴</div>
+              <div><div style="font-size:0.85rem;font-weight:700;color:var(--red)">CRITICAL</div><div style="font-size:0.8rem;color:var(--text-muted)">Overvoltage, Overcurrent, Earth Fault, Phase Loss — instant SMS + call</div></div>
+            </div>
+            <div class="card" style="display:flex;align-items:center;gap:16px;padding:18px">
+              <div style="font-size:1.4rem">🟡</div>
+              <div><div style="font-size:0.85rem;font-weight:700;color:var(--amber)">WARNING</div><div style="font-size:0.8rem;color:var(--text-muted)">Voltage sag, PF below 0.9, Phase imbalance >5% — WhatsApp + push alert</div></div>
+            </div>
+            <div class="card" style="display:flex;align-items:center;gap:16px;padding:18px">
+              <div style="font-size:1.4rem">🟢</div>
+              <div><div style="font-size:0.85rem;font-weight:700;color:var(--green-500)">INFO</div><div style="font-size:0.8rem;color:var(--text-muted)">Daily summary, monthly bill projection, maintenance reminders — email report</div></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="section-label">Integration</div>
+          <div class="section-title" style="font-size:1.8rem">Connects With Your<br>Existing Systems</div>
+          <div class="grid-2" style="margin-top:24px; gap:16px">
+            <div class="card" style="text-align:center; padding:20px">
+              <div style="font-size:2rem;margin-bottom:8px">🔗</div>
+              <div style="font-size:0.85rem;font-weight:700;color:var(--text-white)">Modbus RTU</div>
+              <div style="font-size:0.75rem;color:var(--text-muted)">RS-485 PLC connectivity</div>
+            </div>
+            <div class="card" style="text-align:center; padding:20px">
+              <div style="font-size:2rem;margin-bottom:8px">📡</div>
+              <div style="font-size:0.85rem;font-weight:700;color:var(--text-white)">REST API</div>
+              <div style="font-size:0.75rem;color:var(--text-muted)">ERP / MES integration</div>
+            </div>
+            <div class="card" style="text-align:center; padding:20px">
+              <div style="font-size:2rem;margin-bottom:8px">📊</div>
+              <div style="font-size:0.85rem;font-weight:700;color:var(--text-white)">Excel / CSV</div>
+              <div style="font-size:0.75rem;color:var(--text-muted)">Data export</div>
+            </div>
+            <div class="card" style="text-align:center; padding:20px">
+              <div style="font-size:2rem;margin-bottom:8px">💬</div>
+              <div style="font-size:0.85rem;font-weight:700;color:var(--text-white)">WhatsApp API</div>
+              <div style="font-size:0.75rem;color:var(--text-muted)">Business messaging</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 4 — DASHBOARD DEMO
+═══════════════════════════════════════════ -->
+<div id="page-demo" class="page">
+  <section class="demo-hero">
+    <div class="container">
+      <div class="section-label">Interactive Preview</div>
+      <div class="section-title">PowerGrid Pro Dashboard</div>
+      <p class="section-sub mt-8">This is a live simulation of the actual cloud dashboard. All values update in real time to simulate production mill data.</p>
+
+      <!-- Dashboard shell -->
+      <div class="dashboard-shell">
+
+        <!-- Top bar -->
+        <div class="dashboard-topbar">
+          <div class="topbar-left">
+            <div class="topbar-logo">PowerGrid<span>Pro</span></div>
+            <div class="topbar-tabs">
+              <div class="topbar-tab active">Overview</div>
+              <div class="topbar-tab">Phases</div>
+              <div class="topbar-tab">Energy</div>
+              <div class="topbar-tab">Alerts</div>
+              <div class="topbar-tab">Reports</div>
+            </div>
+          </div>
+          <div class="topbar-right">
+            <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+            <div class="topbar-time" id="dash-time">--:--:--</div>
+            <div style="font-size:0.72rem;color:var(--text-muted)">Jay Jay Mill • Machine 20</div>
+          </div>
+        </div>
+
+        <div class="dashboard-body">
+          <!-- Sidebar -->
+          <div class="dash-sidebar">
+            <div class="sidebar-icon active">📊</div>
+            <div class="sidebar-icon">⚡</div>
+            <div class="sidebar-icon">🔔</div>
+            <div class="sidebar-icon">📋</div>
+            <div class="sidebar-icon">⚙️</div>
+          </div>
+
+          <!-- Main content -->
+          <div class="dash-main">
+
+            <!-- KPI row -->
+            <div class="kpi-row">
+              <div class="kpi">
+                <div class="k-label">R Voltage</div>
+                <div class="k-val"><span id="d-vr">233.4</span><span class="k-unit">V</span></div>
+                <div class="k-change change up">▲ Normal</div>
+              </div>
+              <div class="kpi">
+                <div class="k-label">Y Voltage</div>
+                <div class="k-val"><span id="d-vy">231.8</span><span class="k-unit">V</span></div>
+                <div class="k-change change up">▲ Normal</div>
+              </div>
+              <div class="kpi">
+                <div class="k-label">B Voltage</div>
+                <div class="k-val"><span id="d-vb">232.6</span><span class="k-unit">V</span></div>
+                <div class="k-change change up">▲ Normal</div>
+              </div>
+              <div class="kpi">
+                <div class="k-label">Active Power</div>
+                <div class="k-val"><span id="d-pw">18.6</span><span class="k-unit">kW</span></div>
+                <div class="k-change change down">▼ -1.2%</div>
+              </div>
+              <div class="kpi">
+                <div class="k-label">Power Factor</div>
+                <div class="k-val"><span id="d-pf">0.94</span></div>
+                <div class="k-change change up">▲ Good</div>
+              </div>
+              <div class="kpi">
+                <div class="k-label">Today kWh</div>
+                <div class="k-val"><span id="d-kwh">247</span><span class="k-unit">kWh</span></div>
+                <div class="k-change change up">+18.3 this hour</div>
+              </div>
+            </div>
+
+            <!-- Charts row -->
+            <div class="dash-charts">
+              <!-- Waveform -->
+              <div class="chart-panel">
+                <div class="chart-panel-header">
+                  <div>
+                    <div class="chart-panel-title">3-Phase Voltage Trend — Last 60 seconds</div>
+                    <div class="chart-panel-sub">Updating every 2s</div>
+                  </div>
+                  <div style="display:flex;gap:12px;font-size:0.7rem">
+                    <span style="color:#FF7070">— R</span>
+                    <span style="color:var(--amber)">— Y</span>
+                    <span style="color:var(--blue-400)">— B</span>
+                  </div>
+                </div>
+                <svg id="wave-svg" viewBox="0 0 520 120" class="wave-chart" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="gr" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FF7070" stop-opacity="0.3"/><stop offset="100%" stop-color="#FF7070" stop-opacity="0"/></linearGradient>
+                    <linearGradient id="gy" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFB800" stop-opacity="0.25"/><stop offset="100%" stop-color="#FFB800" stop-opacity="0"/></linearGradient>
+                    <linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3D7EFF" stop-opacity="0.25"/><stop offset="100%" stop-color="#3D7EFF" stop-opacity="0"/></linearGradient>
+                  </defs>
+                  <path id="area-r" fill="url(#gr)"/>
+                  <path id="area-y" fill="url(#gy)"/>
+                  <path id="area-b" fill="url(#gb)"/>
+                  <path id="line-r" fill="none" stroke="#FF7070" stroke-width="1.5"/>
+                  <path id="line-y" fill="none" stroke="#FFB800" stroke-width="1.5"/>
+                  <path id="line-b" fill="none" stroke="#3D7EFF" stroke-width="1.5"/>
+                  <!-- Y axis labels -->
+                  <text x="4" y="14" fill="rgba(255,255,255,0.3)" font-size="8" font-family="monospace">240V</text>
+                  <text x="4" y="64" fill="rgba(255,255,255,0.3)" font-size="8" font-family="monospace">230V</text>
+                  <text x="4" y="114" fill="rgba(255,255,255,0.3)" font-size="8" font-family="monospace">220V</text>
+                  <line x1="32" y1="0" x2="32" y2="120" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                </svg>
+              </div>
+              <!-- Donut -->
+              <div class="chart-panel">
+                <div class="chart-panel-header">
+                  <div>
+                    <div class="chart-panel-title">Power Distribution</div>
+                    <div class="chart-panel-sub">By Phase — Current</div>
+                  </div>
+                </div>
+                <div class="donut-container">
+                  <svg viewBox="0 0 100 100" width="110" height="110" style="flex-shrink:0">
+                    <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="14"/>
+                    <circle id="donut-r" cx="50" cy="50" r="38" fill="none" stroke="#FF7070" stroke-width="14"
+                      stroke-dasharray="79.7 159.1" stroke-dashoffset="39.8" stroke-linecap="butt"/>
+                    <circle id="donut-y" cx="50" cy="50" r="38" fill="none" stroke="#FFB800" stroke-width="14"
+                      stroke-dasharray="53.0 159.1" stroke-dashoffset="-39.9" stroke-linecap="butt"/>
+                    <circle id="donut-b" cx="50" cy="50" r="38" fill="none" stroke="#3D7EFF" stroke-width="14"
+                      stroke-dasharray="50.1 159.1" stroke-dashoffset="-92.9" stroke-linecap="butt"/>
+                    <text x="50" y="47" text-anchor="middle" fill="white" font-size="11" font-weight="700" font-family="monospace" id="donut-center">18.6</text>
+                    <text x="50" y="58" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="7" font-family="monospace">kW total</text>
+                  </svg>
+                  <div class="donut-labels">
+                    <div class="donut-label"><div class="dl-dot" style="background:#FF7070"></div><span class="dl-name">R-Phase</span><span class="dl-val" id="dR"> 6.7kW</span></div>
+                    <div class="donut-label"><div class="dl-dot" style="background:#FFB800"></div><span class="dl-name">Y-Phase</span><span class="dl-val" id="dY"> 5.8kW</span></div>
+                    <div class="donut-label"><div class="dl-dot" style="background:#3D7EFF"></div><span class="dl-name">B-Phase</span><span class="dl-val" id="dB"> 6.1kW</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase table + alerts -->
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px">
+              <div class="chart-panel">
+                <div class="chart-panel-header">
+                  <div class="chart-panel-title">Phase-by-Phase Parameters</div>
+                  <div class="chart-panel-sub" id="phase-ts">Live</div>
+                </div>
+                <table class="phase-table">
+                  <thead>
+                    <tr><th>Phase</th><th>Voltage (V)</th><th>Current (A)</th><th>Power (kW)</th><th>PF</th><th>Status</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr class="ph-r">
+                      <td>R</td>
+                      <td id="pt-vr">233.4</td>
+                      <td id="pt-ir">28.7</td>
+                      <td id="pt-pr">6.70</td>
+                      <td id="pt-pfr">0.96</td>
+                      <td class="val-ok">✓ OK</td>
+                    </tr>
+                    <tr class="ph-y">
+                      <td>Y</td>
+                      <td id="pt-vy">231.8</td>
+                      <td id="pt-iy">25.0</td>
+                      <td id="pt-py">5.80</td>
+                      <td id="pt-pfy">0.94</td>
+                      <td class="val-ok">✓ OK</td>
+                    </tr>
+                    <tr class="ph-b">
+                      <td>B</td>
+                      <td id="pt-vb">232.6</td>
+                      <td id="pt-ib">26.2</td>
+                      <td id="pt-pb">6.10</td>
+                      <td id="pt-pfb">0.91</td>
+                      <td class="val-warn">⚠ PF Low</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- Alerts -->
+              <div class="alerts-panel">
+                <div class="chart-panel-header" style="margin-bottom:8px">
+                  <div class="chart-panel-title">Recent Alerts</div>
+                </div>
+                <div class="alert-row">
+                  <div class="alert-icon">⚠️</div>
+                  <div class="alert-body">
+                    <div class="al-msg">B-Phase PF dropped below 0.92</div>
+                    <div class="al-time">2 min ago</div>
+                  </div>
+                </div>
+                <div class="alert-row">
+                  <div class="alert-icon">✅</div>
+                  <div class="alert-body">
+                    <div class="al-msg">Phase imbalance restored &lt;3%</div>
+                    <div class="al-time">18 min ago</div>
+                  </div>
+                </div>
+                <div class="alert-row">
+                  <div class="alert-icon">📊</div>
+                  <div class="alert-body">
+                    <div class="al-msg">Daily report generated & sent</div>
+                    <div class="al-time">06:00 IST</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bottom row -->
+            <div class="dash-bottom">
+              <!-- Energy bars -->
+              <div class="chart-panel">
+                <div class="chart-panel-header">
+                  <div class="chart-panel-title">Energy by Shift — Today</div>
+                </div>
+                <div class="energy-bars">
+                  <div class="ebar">
+                    <div class="ebar-label"><span class="el">Morning Shift (06:00–14:00)</span><span class="ev" id="es1">98.4 kWh</span></div>
+                    <div class="ebar-track"><div class="ebar-fill ef-blue" style="width:68%"></div></div>
+                  </div>
+                  <div class="ebar">
+                    <div class="ebar-label"><span class="el">Afternoon Shift (14:00–22:00)</span><span class="ev" id="es2">87.2 kWh</span></div>
+                    <div class="ebar-track"><div class="ebar-fill ef-green" style="width:60%"></div></div>
+                  </div>
+                  <div class="ebar">
+                    <div class="ebar-label"><span class="el">Night Shift (22:00–06:00)</span><span class="ev">61.4 kWh</span></div>
+                    <div class="ebar-track"><div class="ebar-fill ef-amber" style="width:42%"></div></div>
+                  </div>
+                </div>
+                <div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--border); display:flex; justify-content:space-between; font-size:0.72rem">
+                  <span style="color:var(--text-muted)">Total Today</span>
+                  <span style="color:white;font-family:var(--font-mono);font-weight:700" id="d-total-kwh">247.0 kWh</span>
+                </div>
+              </div>
+              <!-- Bill panel -->
+              <div class="chart-panel">
+                <div class="chart-panel-header">
+                  <div class="chart-panel-title">Electricity Bill Projection</div>
+                  <div class="chart-panel-sub">TNEB LT-IV Tariff</div>
+                </div>
+                <div class="bill-summary">
+                  <div class="bill-item">
+                    <div class="bi-label">Month-to-Date kWh</div>
+                    <div class="bi-val" id="bill-kwh">5,847</div>
+                    <div class="bi-sub">of ~7,200 projected</div>
+                  </div>
+                  <div class="bill-item">
+                    <div class="bi-label">Current Bill Est.</div>
+                    <div class="bi-val" id="bill-amt" style="color:var(--amber)">₹52,623</div>
+                    <div class="bi-sub">₹9.0/unit avg</div>
+                  </div>
+                  <div class="bill-item" style="grid-column:1/-1">
+                    <div class="bi-label">Month-End Projection</div>
+                    <div class="bi-val" style="color:var(--green-500);font-size:1.3rem" id="bill-proj">₹64,800</div>
+                    <div class="bi-sub">Based on current consumption pattern</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:32px">
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:20px">This is a simulated demo. Request a live connection to your actual plant data.</p>
+        <button class="btn btn-primary" onclick="showPage('contact')">Connect My Plant Data →</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 5 — PRICING
+═══════════════════════════════════════════ -->
+<div id="page-pricing" class="page">
+  <section class="pricing-hero section">
+    <div class="container">
+      <div class="section-label">Transparent Pricing</div>
+      <div class="section-title">Simple Per-Machine Pricing</div>
+      <p class="section-sub" style="margin:12px auto 0">No hidden charges. No per-user fees. Pricing based on number of machines monitored. All plans include installation and onboarding.</p>
+      <div class="pricing-toggle">
+        <button class="toggle-btn active" id="t-monthly" onclick="toggleBilling('monthly')">Monthly</button>
+        <button class="toggle-btn" id="t-annual" onclick="toggleBilling('annual')">Annual</button>
+        <span class="save-badge">Save 20%</span>
+      </div>
+
+      <div class="pricing-grid">
+        <!-- Starter -->
+        <div class="pricing-card">
+          <div class="plan-name">Starter</div>
+          <div class="plan-price">
+            <span class="currency">₹</span>
+            <span id="p-starter">1,999</span>
+            <span class="per">/machine/mo</span>
+          </div>
+          <p class="plan-desc" id="e-plan1-desc">Perfect for small mills with 1–5 machines. Get started with core monitoring features.</p>
+          <div class="plan-features">
+            <div class="plan-feature"><span class="pf-icon">✅</span>3-Phase Voltage & Current</div>
+            <div class="plan-feature"><span class="pf-icon">✅</span>Real-time Cloud Dashboard</div>
+            <div class="plan-feature"><span class="pf-icon">✅</span>Mobile App (Android)</div>
+            <div class="plan-feature"><span class="pf-icon">✅</span>Email Alerts</div>
+            <div class="plan-feature"><span class="pf-icon">✅</span>Daily PDF Report</div>
+            <div class="plan-feature"><span class="pf-icon">✅</span>7-Day Data Retention</div>
+            <div class="plan-feature disabled"><span class="pf-icon">✗</span>WhatsApp Alerts</div>
+            <div class="plan-feature disabled"><span class="pf-icon">✗</span>Bill Projection</div>
+            <div class="plan-feature disabled"><span class="pf-icon">✗</span>Earth Fault Monitor</div>
+            <div class="plan-feature disabled"><span class="pf-icon">✗</span>API Access</div>
+          </div>
+          <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="showPage('contact')">Get Started</button>
+          <div class="addon-note">+ ₹4,999 one-time hardware cost</div>
+        </div>
+
+        <!-- Pro -->
+        <div class="pricing-card featured">
+          <div class="popular-badge">MOST POPULAR</div>
+          <div class="plan-name" style="color:var(--blue-400)">Professional</div>
+          <div class="plan-price">
+            <span class="currency">₹</span>
+            <span id="p-pro">3,499</span>
+            <span class="per">/machine/mo</span>
+          </div>
+          <p class="plan-desc" id="e-plan2-desc">The complete monitoring suite for mid-size textile mills. TNEB bill projection included.</p>
+          <div class="plan-features">
+            <div class="plan-feature"><span class="pf-icon">✅</span>Everything in Starter</div>
+            <div class="plan-feature"><span class="pf-icon">✅</span>WhatsApp Alerts</div>
+            <div class="plan-feature"><span class="pf-icon">✅</span>TNEB Bill Projection</div>
+            <div class="plan-feature"><span class="pf-icon">✅</span>Earth Fault Monitoring</div>
+            <div class="plan-feature"><span class="pf-icon">✅</span>iOS + Android App</div>
+            <div class="plan-feature"><span class="pf-icon">✅</span>1-Year Data Retention</div>
+            <div class="plan-feature"><span class="pf-icon">✅</span>SMS Alerts (100/mo)</div>
+            <div class="plan-feature"><span class="pf-icon">✅</span>Shift-wise Energy Reports</div>
+            <div class="plan-feature"><span class="pf-icon">✅</span>Multi-site View</div>
+            <div class="plan-feature disabled"><span class="pf-icon">✗</span>REST API Access</div>
+          </div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="showPage('contact')">Start Free Pilot</button>
+          <div class="addon-note">+ ₹6,999 one-time hardware cost</div>
+        </div>
+
+        <!-- Enterprise -->
+        <div class="pricing-card">
+          <div class="plan-name">Enterprise</div>
+          <div class="plan-price">
+            <span class="currency">₹</span>
+            <span id="p-ent">5,999</span>
+            <span class="per">/machine/mo</span>
+          </div>
+          <p class="plan-desc" id="e-plan3-desc">For large mills with 20+ machines. Includes dedicated support engineer and custom integrations.</p>
+          <div class="plan-features">
+            <div class="plan-feature"><span class="pf-icon">✅</span>Everything in Professional</div>
+            <div class="plan-feature"><span class="pf-icon">✅</span>REST API + Webhooks</div>
+            <div class="plan-feature"><span class="pf-icon">✅</span>ERP / SCADA Integration</div>
+            <div class="plan-feature"><span class="pf-icon">✅</span>Dedicated Support Engineer</div>
+            <div class="plan-feature"><span class="pf-icon">✅</span>5-Year Data Retention</div>
+            <div class="plan-feature"><span class="pf-icon">✅</span>Custom Alert Rules</div>
+            <div class="plan-feature"><span class="pf-icon">✅</span>TANGEDCO Audit Reports</div>
+            <div class="plan-feature"><span class="pf-icon">✅</span>SLA: 4-hr on-site response</div>
+            <div class="plan-feature"><span class="pf-icon">✅</span>Unlimited SMS Alerts</div>
+            <div class="plan-feature"><span class="pf-icon">✅</span>White-label Dashboard Option</div>
+          </div>
+          <button class="btn btn-green" style="width:100%;justify-content:center" onclick="showPage('contact')">Contact Sales</button>
+          <div class="addon-note">Hardware included for 10+ machines</div>
+        </div>
+      </div>
+
+      <!-- Add-ons -->
+      <div style="margin-top:72px">
+        <div class="text-center" style="margin-bottom:32px">
+          <div class="section-label">Optional Add-ons</div>
+          <div class="section-title" style="font-size:1.8rem">Customize Your Plan</div>
+        </div>
+        <div class="addon-grid">
+          <div class="addon-card">
+            <div class="a-icon">📱</div>
+            <div class="a-name">Extra SMS Pack</div>
+            <div class="a-desc">500 additional SMS alerts per month</div>
+            <div class="a-price">₹299/mo</div>
+          </div>
+          <div class="addon-card">
+            <div class="a-icon">📊</div>
+            <div class="a-name">Analytics Pro</div>
+            <div class="a-desc">ML bill forecasting + load optimization</div>
+            <div class="a-price">₹999/mo</div>
+          </div>
+          <div class="addon-card">
+            <div class="a-icon">🔧</div>
+            <div class="a-name">Annual AMC</div>
+            <div class="a-desc">Quarterly calibration + next-day swap</div>
+            <div class="a-price">₹4,999/yr</div>
+          </div>
+          <div class="addon-card">
+            <div class="a-icon">🔗</div>
+            <div class="a-name">API Integration</div>
+            <div class="a-desc">ERP/SCADA custom connector setup</div>
+            <div class="a-price">₹9,999 one-time</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div style="margin-top:80px">
+        <div class="text-center" style="margin-bottom:40px">
+          <div class="section-label">Common Questions</div>
+          <div class="section-title" style="font-size:1.8rem">Pricing FAQs</div>
+        </div>
+        <div class="faq-list">
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Is the hardware cost included in the monthly fee? <span class="faq-chevron">▾</span></div>
+            <div class="faq-a" id="e-faq1">Hardware (the physical PG-3M logger and CTs) is a one-time cost separate from the monthly software subscription. For Enterprise customers with 10+ machines, hardware is included. We also offer a full rental model where you pay a slightly higher monthly fee and we own the hardware.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Can I try before committing? <span class="faq-chevron">▾</span></div>
+            <div class="faq-a" id="e-faq2">Yes. We offer a 30-day free pilot on one machine at your site. Our engineer installs the hardware at no cost, and you get full Professional plan access for 30 days. If you're not satisfied, we remove the hardware at no charge.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">How is "per machine" defined? <span class="faq-chevron">▾</span></div>
+            <div class="faq-a" id="e-faq3">One machine = one 3-phase power circuit monitored by one PG-3M logger. For a ring frame with a single 3-phase supply, that is one machine. If you have a MCC panel feeding multiple circuits you want tracked separately, each circuit counts as one machine.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Do you support GST-compliant invoicing? <span class="faq-chevron">▾</span></div>
+            <div class="faq-a" id="e-faq4">Yes. All invoices are GST-compliant (18% GST on software services). Hardware purchases are taxed at 12% GST. We provide monthly auto-generated invoices via email for your accounts team.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">What happens to my data if I cancel? <span class="faq-chevron">▾</span></div>
+            <div class="faq-a" id="e-faq5">Your data is yours. On cancellation, we provide a complete data export in CSV and PDF format for the full retention period, at no charge. Data is deleted from our servers 90 days after export.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 6 — CONTACT
+═══════════════════════════════════════════ -->
+<div id="page-contact" class="page">
+  <section class="contact-hero section">
+    <div class="container">
+      <div class="section-label">Get In Touch</div>
+      <div class="section-title">Talk to an Energy<br>Monitoring Specialist</div>
+      <p class="section-sub mt-8">Our engineers are based in Coimbatore. Site visits and free energy audits available across Tamil Nadu textile belt — CBE, Tirupur, Karur, Salem, Erode.</p>
+
+      <div class="contact-grid">
+        <!-- Left: info -->
+        <div>
+          <div class="contact-info-cards">
+            <div class="contact-info-card">
+              <div class="ci-icon ci-blue">📞</div>
+              <div class="ci-body">
+                <div class="ci-label">Phone</div>
+                <div class="ci-val" id="e-con-phone">+91 98765 43210</div>
+                <div class="ci-sub" id="e-con-hours">Mon–Sat, 8:00 AM – 8:00 PM IST</div>
+              </div>
+            </div>
+            <div class="contact-info-card">
+              <div class="ci-icon ci-green">💬</div>
+              <div class="ci-body">
+                <div class="ci-label">WhatsApp</div>
+                <div class="ci-val" id="e-con-wa">+91 98765 43210</div>
+                <div class="ci-sub" id="e-con-wa-sub">24×7 support for existing customers</div>
+              </div>
+            </div>
+            <div class="contact-info-card">
+              <div class="ci-icon ci-blue">✉️</div>
+              <div class="ci-body">
+                <div class="ci-label">Email</div>
+                <div class="ci-val" id="e-con-email">sales@powergridpro.in</div>
+                <div class="ci-sub">Response within 4 business hours</div>
+              </div>
+            </div>
+            <div class="contact-info-card">
+              <div class="ci-icon ci-amber">📍</div>
+              <div class="ci-body">
+                <div class="ci-label">Office</div>
+                <div class="ci-val" id="e-con-addr1">TIDEL Park, Coimbatore</div>
+                <div class="ci-sub" id="e-con-addr2">Tamil Nadu 641014 — Walk-ins welcome</div>
+              </div>
+            </div>
+          </div>
+          <div class="map-placeholder">
+            <div class="map-pin">📍</div>
+            <div>TIDEL Park, Coimbatore, Tamil Nadu</div>
+            <div style="font-size:0.75rem;color:var(--text-muted)">Serving mills across Tamil Nadu's textile belt</div>
+          </div>
+        </div>
+
+        <!-- Right: form -->
+        <div class="contact-form" id="contact-form-wrapper">
+          <div id="form-content">
+            <h3 id="e-form-title">Request a Free Energy Audit</h3>
+            <p class="form-sub" id="e-form-sub">Fill in your details and one of our engineers will call you within 24 hours to schedule a site visit.</p>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Full Name *</label>
+                <input type="text" placeholder="Rajesh Kumar" id="f-name">
+              </div>
+              <div class="form-group">
+                <label>Company / Mill Name *</label>
+                <input type="text" placeholder="Aarti Spinning Mills" id="f-company">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Mobile Number *</label>
+                <input type="tel" placeholder="+91 98765 43210" id="f-phone">
+              </div>
+              <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" placeholder="rajesh@mill.in" id="f-email">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Location / City</label>
+              <select id="f-city">
+                <option value="">Select your city</option>
+                <option>Coimbatore</option>
+                <option>Tirupur</option>
+                <option>Karur</option>
+                <option>Salem</option>
+                <option>Erode</option>
+                <option>Dindigul</option>
+                <option>Other Tamil Nadu</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Number of Machines to Monitor</label>
+              <select id="f-machines">
+                <option value="">Select range</option>
+                <option>1–5 machines</option>
+                <option>6–20 machines</option>
+                <option>21–50 machines</option>
+                <option>50+ machines</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Message / Requirements</label>
+              <textarea placeholder="Tell us about your current power issues, what you'd like to monitor, or any specific requirements..." id="f-msg"></textarea>
+            </div>
+            <button class="btn btn-primary form-submit" onclick="submitForm()">
+              ⚡ &nbsp;Request Free Site Visit
+            </button>
+            <div style="text-align:center;margin-top:14px">
+              <span style="font-size:0.75rem;color:var(--text-muted)">Or call us directly: </span>
+              <a href="tel:+919876543210" style="font-size:0.75rem;color:var(--blue-400);font-weight:600">+91 98765 43210</a>
+            </div>
+          </div>
+          <div class="form-success" id="form-success">
+            <div class="success-icon">✅</div>
+            <h4>Request Submitted!</h4>
+            <p>Our engineer will call you within 24 hours to schedule a free site visit and energy audit at your mill.</p>
+            <div style="margin-top:20px">
+              <a href="https://wa.me/919876543210?text=Hi%2C%20I%20just%20submitted%20a%20contact%20form%20and%20wanted%20to%20connect%20about%20energy%20monitoring" target="_blank" class="btn btn-green">
+                💬 &nbsp;Also Message Us on WhatsApp
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coverage cities -->
+      <div style="margin-top:80px">
+        <div class="text-center" style="margin-bottom:32px">
+          <div class="section-label">Service Coverage</div>
+          <div class="section-title" style="font-size:1.8rem">We Come to You</div>
+        </div>
+        <div class="coverage-grid">
+          <div class="coverage-card">
+            <div class="c-icon">🏙️</div>
+            <div class="c-city">Coimbatore</div>
+            <div class="c-sub">Head Office • 4-hr SLA</div>
+          </div>
+          <div class="coverage-card">
+            <div class="c-icon">🏭</div>
+            <div class="c-city">Tirupur</div>
+            <div class="c-sub">Dedicated team • Same-day</div>
+          </div>
+          <div class="coverage-card">
+            <div class="c-icon">🏗️</div>
+            <div class="c-city">Karur</div>
+            <div class="c-sub">Field engineer • Next-day</div>
+          </div>
+          <div class="coverage-card">
+            <div class="c-icon">🌆</div>
+            <div class="c-city">Salem</div>
+            <div class="c-sub">Partner network • 48-hr</div>
+          </div>
+          <div class="coverage-card">
+            <div class="c-icon">🏢</div>
+            <div class="c-city">Erode</div>
+            <div class="c-sub">Field engineer • 48-hr</div>
+          </div>
+          <div class="coverage-card">
+            <div class="c-icon">🏙️</div>
+            <div class="c-city">Dindigul</div>
+            <div class="c-sub">Partner network • 48-hr</div>
+          </div>
+          <div class="coverage-card">
+            <div class="c-icon">🌊</div>
+            <div class="c-city">Chennai</div>
+            <div class="c-sub">On-call engineer</div>
+          </div>
+          <div class="coverage-card">
+            <div class="c-icon">📍</div>
+            <div class="c-city">Other TN</div>
+            <div class="c-sub">Remote install support</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   PAGE NAVIGATION
+═══════════════════════════════════════════ */
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.getElementById('nav-' + id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (id === 'demo') startDashboard();
+}
+
+/* ═══════════════════════════════════════════
+   HERO LIVE VALUES
+═══════════════════════════════════════════ */
+function randomWalk(val, min, max, step) {
+  val += (Math.random() - 0.5) * step;
+  return Math.max(min, Math.min(max, val));
+}
+let hVr = 233.4, hVy = 231.8, hVb = 232.6, hPw = 18.6, hKwh = 247;
+function updateHero() {
+  hVr = randomWalk(hVr, 225, 240, 0.4);
+  hVy = randomWalk(hVy, 225, 240, 0.4);
+  hVb = randomWalk(hVb, 225, 240, 0.4);
+  hPw = randomWalk(hPw, 15, 25, 0.3);
+  hKwh += 0.005;
+  const el = id => document.getElementById(id);
+  if(el('v-r')) el('v-r').textContent = hVr.toFixed(1);
+  if(el('curr')) el('curr').textContent = (hPw*1000/230/3/0.94).toFixed(1);
+  if(el('pwr')) el('pwr').textContent = hPw.toFixed(1);
+  if(el('kwh')) el('kwh').textContent = Math.round(hKwh);
+}
+setInterval(updateHero, 2000);
+
+/* ═══════════════════════════════════════════
+   DASHBOARD DEMO
+═══════════════════════════════════════════ */
+let dashRunning = false;
+let waveData = { r: [], y: [], b: [] };
+const WAVE_LEN = 60;
+
+function startDashboard() {
+  if (dashRunning) return;
+  dashRunning = true;
+  // init wave data
+  for (let i = 0; i < WAVE_LEN; i++) {
+    waveData.r.push(233 + (Math.random() - 0.5) * 4);
+    waveData.y.push(231 + (Math.random() - 0.5) * 4);
+    waveData.b.push(232 + (Math.random() - 0.5) * 4);
+  }
+  setInterval(updateDash, 1000);
+  updateClock();
+  setInterval(updateClock, 1000);
+}
+
+let dVr = 233.4, dVy = 231.8, dVb = 232.6, dPw = 18.6, dPf = 0.94, dKwh = 247;
+
+function updateDash() {
+  dVr = randomWalk(dVr, 228, 238, 0.5);
+  dVy = randomWalk(dVy, 228, 238, 0.5);
+  dVb = randomWalk(dVb, 228, 238, 0.5);
+  dPw = randomWalk(dPw, 16, 22, 0.4);
+  dPf = randomWalk(dPf, 0.88, 0.98, 0.01);
+  dKwh += 0.005;
+
+  const ir = dPw * 0.36 / dVr * 1000;
+  const iy = dPw * 0.31 / dVy * 1000;
+  const ib = dPw * 0.33 / dVb * 1000;
+  const pr = dPw * 0.36, py = dPw * 0.31, pb = dPw * 0.33;
+
+  setText('d-vr', dVr.toFixed(1));
+  setText('d-vy', dVy.toFixed(1));
+  setText('d-vb', dVb.toFixed(1));
+  setText('d-pw', dPw.toFixed(1));
+  setText('d-pf', dPf.toFixed(2));
+  setText('d-kwh', Math.round(dKwh));
+  setText('d-total-kwh', (dKwh).toFixed(1) + ' kWh');
+
+  setText('pt-vr', dVr.toFixed(1));
+  setText('pt-vy', dVy.toFixed(1));
+  setText('pt-vb', dVb.toFixed(1));
+  setText('pt-ir', ir.toFixed(1));
+  setText('pt-iy', iy.toFixed(1));
+  setText('pt-ib', ib.toFixed(1));
+  setText('pt-pr', pr.toFixed(2));
+  setText('pt-py', py.toFixed(2));
+  setText('pt-pb', pb.toFixed(2));
+  setText('pt-pfr', (dPf + 0.02).toFixed(2));
+  setText('pt-pfy', dPf.toFixed(2));
+  setText('pt-pfb', (dPf - 0.03).toFixed(2));
+
+  setText('dR', ' ' + pr.toFixed(1) + 'kW');
+  setText('dY', ' ' + py.toFixed(1) + 'kW');
+  setText('dB', ' ' + pb.toFixed(1) + 'kW');
+  setText('donut-center', dPw.toFixed(1));
+
+  // wave
+  waveData.r.shift(); waveData.r.push(dVr);
+  waveData.y.shift(); waveData.y.push(dVy);
+  waveData.b.shift(); waveData.b.push(dVb);
+  drawWave();
+
+  // bill
+  const mtd = 5847 + Math.round((dKwh - 247) * 4);
+  setText('bill-kwh', mtd.toLocaleString('en-IN'));
+  setText('bill-amt', '₹' + Math.round(mtd * 9).toLocaleString('en-IN'));
+  setText('bill-proj', '₹' + Math.round(mtd * 9 * 1.23).toLocaleString('en-IN'));
+}
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+function drawWave() {
+  const svg = document.getElementById('wave-svg');
+  if (!svg) return;
+  const W = 520, H = 120, PAD = 36;
+  const w = W - PAD;
+  const min = 220, max = 242;
+
+  function pathFor(data, close) {
+    let pts = data.map((v, i) => {
+      const x = PAD + (i / (WAVE_LEN - 1)) * w;
+      const y = H - ((v - min) / (max - min)) * (H - 8) - 4;
+      return [x, y];
+    });
+    let d = `M ${pts[0][0]} ${pts[0][1]}`;
+    for (let i = 1; i < pts.length; i++) {
+      const cp1x = pts[i-1][0] + (pts[i][0] - pts[i-1][0]) / 3;
+      const cp2x = pts[i][0] - (pts[i][0] - pts[i-1][0]) / 3;
+      d += ` C ${cp1x} ${pts[i-1][1]} ${cp2x} ${pts[i][1]} ${pts[i][0]} ${pts[i][1]}`;
+    }
+    if (close) d += ` L ${pts[pts.length-1][0]} ${H} L ${PAD} ${H} Z`;
+    return d;
+  }
+
+  ['r','y','b'].forEach(ph => {
+    const line = document.getElementById('line-' + ph);
+    const area = document.getElementById('area-' + ph);
+    if (line) line.setAttribute('d', pathFor(waveData[ph], false));
+    if (area) area.setAttribute('d', pathFor(waveData[ph], true));
+  });
+}
+
+function updateClock() {
+  const el = document.getElementById('dash-time');
+  if (el) {
+    const now = new Date();
+    el.textContent = now.toLocaleTimeString('en-IN', { hour12: false, timeZone: 'Asia/Kolkata' }) + ' IST';
+  }
+}
+
+/* ═══════════════════════════════════════════
+   PRICING TOGGLE
+═══════════════════════════════════════════ */
+let billing = 'monthly';
+function toggleBilling(mode) {
+  billing = mode;
+  document.getElementById('t-monthly').classList.toggle('active', mode === 'monthly');
+  document.getElementById('t-annual').classList.toggle('active', mode === 'annual');
+  const m = mode === 'monthly';
+  setText('p-starter', m ? '1,999' : '1,599');
+  setText('p-pro',     m ? '3,499' : '2,799');
+  setText('p-ent',     m ? '5,999' : '4,799');
+}
+
+/* ═══════════════════════════════════════════
+   FAQ TOGGLE
+═══════════════════════════════════════════ */
+function toggleFaq(item) {
+  item.classList.toggle('open');
+}
+
+/* ═══════════════════════════════════════════
+   FORM SUBMIT
+═══════════════════════════════════════════ */
+function submitForm() {
+  const name = document.getElementById('f-name').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+  if (!name) { alert('Please enter your name.'); return; }
+  if (!phone) { alert('Please enter your mobile number.'); return; }
+  document.getElementById('form-content').style.display = 'none';
+  document.getElementById('form-success').style.display = 'block';
+}
+</script>
+<!-- ════════════════════════════════════════════════════════
+     LIVE CONTENT SYNC — pulls saved edits from the admin
+     server (running on the same WiFi network) so every
+     device sees the latest content without redeploying files.
+════════════════════════════════════════════════════════ -->
+<script>
+const COLORS = ['--blue-500','--blue-400','--green-500','--green-400','--amber','--red','--bg-dark','--bg-card','--bg-panel'];
+
+/* Default prices (used until/unless the admin has saved different ones) */
+let livePrices = {
+  'p1-mo':'1,999', 'p1-an':'1,599',
+  'p2-mo':'3,499', 'p2-an':'2,799',
+  'p3-mo':'5,999', 'p3-an':'4,799'
+};
+
+function applyVal(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+/* Re-implements the billing toggle to read from the server-driven
+   livePrices object instead of hardcoded numbers. */
+window.toggleBilling = function (mode) {
+  billing = mode;
+  document.getElementById('t-monthly').classList.toggle('active', mode === 'monthly');
+  document.getElementById('t-annual').classList.toggle('active', mode === 'annual');
+  const m = mode === 'monthly';
+  setText('p-starter', m ? livePrices['p1-mo'] : livePrices['p1-an']);
+  setText('p-pro',     m ? livePrices['p2-mo'] : livePrices['p2-an']);
+  setText('p-ent',     m ? livePrices['p3-mo'] : livePrices['p3-an']);
+};
+
+function updateWaFab(num, msg) {
+  if (!num && !msg) return;
+  const fab = document.querySelector('.whatsapp-fab');
+  if (!fab) return;
+  const n = (num || '919876543210').replace(/\D/g, '');
+  const link = 'https://wa.me/' + n + '?text=' + encodeURIComponent(msg || '');
+  fab.href = link;
+}
+
+function applyContentData(saved){
+  if(!saved) return;
+  if(saved.text){
+    Object.keys(saved.text).forEach(id => {
+      if(saved.text[id]!==undefined && saved.text[id]!=='') applyVal(id, saved.text[id]);
+    });
+  }
+  if(saved.colors){
+    Object.keys(saved.colors).forEach(name => {
+      document.documentElement.style.setProperty(name, saved.colors[name]);
+    });
+  }
+  if(saved.prices){
+    Object.assign(livePrices, saved.prices);
+    window.toggleBilling(window.billing || 'monthly');
+  }
+  if(saved.wa){
+    updateWaFab(saved.wa.num, saved.wa.msg);
+  }
+}
+
+function isServerMode(){
+  return location.protocol==='http:' || location.protocol==='https:';
+}
+
+async function syncContent() {
+  let saved = null;
+
+  /* 1️⃣  Try server.py API (works when running via python3 server.py) */
+  if(isServerMode()){
+    try {
+      const res = await fetch('/api/content', { cache: 'no-store' });
+      if (res.ok){
+        const data = await res.json();
+        if(data && Object.keys(data).length > 0){ saved = data; }
+      }
+    } catch(e) {
+      console.warn('Server sync unavailable:', e.message);
+    }
+  }
+
+  /* 2️⃣  Fallback: localStorage (saved by admin.html in file:// mode) */
+  if(!saved){
+    try{
+      const raw = localStorage.getItem('pgContent');
+      if(raw){ saved = JSON.parse(raw); }
+    } catch(e){}
+  }
+
+  applyContentData(saved);
+}
+
+/* On load: apply content immediately, then poll every 4 s (server mode)
+   so changes from another device appear without manual refresh. */
+document.addEventListener('DOMContentLoaded', () => {
+  syncContent();
+  if(isServerMode()){
+    setInterval(syncContent, 4000);
+  } else {
+    /* file:// mode — poll localStorage every 2 s so admin edits
+       saved in the same browser show up quickly */
+    setInterval(syncContent, 2000);
+  }
+});
+</script>
+</body>
+</html>
