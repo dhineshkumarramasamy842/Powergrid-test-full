@@ -1,0 +1,1938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PowerGrid Pro – 3-Phase Energy Monitoring Systems</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   DESIGN TOKENS
+   ═══════════════════════════════════════════════ */
+:root {
+  --bg-dark:     #0A0F1E;
+  --bg-card:     #0E1628;
+  --bg-panel:    #121D35;
+  --bg-light:    #F4F7FF;
+  --blue-900:    #001B4E;
+  --blue-700:    #0033A0;
+  --blue-500:    #0057FF;
+  --blue-400:    #3D7EFF;
+  --blue-200:    #A8C4FF;
+  --green-500:   #00D68F;
+  --green-400:   #2EEDB5;
+  --green-300:   #7FFFD4;
+  --amber:       #FFB800;
+  --red:         #FF3B3B;
+  --text-white:  #FFFFFF;
+  --text-muted:  #8499CC;
+  --text-body:   #CBD5E1;
+  --border:      rgba(0,87,255,0.18);
+  --border-g:    rgba(0,214,143,0.22);
+  --glow-blue:   0 0 40px rgba(0,87,255,0.25);
+  --glow-green:  0 0 30px rgba(0,214,143,0.2);
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --font-main: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --nav-h: 68px;
+}
+
+/* ═══════════════════════════════════════════════
+   RESET + BASE
+   ═══════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font-main);
+  background: var(--bg-dark);
+  color: var(--text-body);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+img { display: block; max-width: 100%; }
+a { text-decoration: none; color: inherit; }
+button { border: none; cursor: pointer; font-family: inherit; }
+ul { list-style: none; }
+
+/* ═══════════════════════════════════════════════
+   PAGE SYSTEM
+   ═══════════════════════════════════════════════ */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ═══════════════════════════════════════════════
+   NAVBAR (marketing/public site navbar only —
+   scoped to .site-nav so it never touches the
+   admin panel's own <nav class="adm-nav"> sidebar)
+   ═══════════════════════════════════════════════ */
+nav.site-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  height: var(--nav-h);
+  background: rgba(10,15,30,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px;
+}
+.nav-brand {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 800; font-size: 1.2rem; color: var(--text-white);
+  cursor: pointer;
+}
+.nav-brand .logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--blue-500), var(--green-500));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+}
+.nav-brand span.accent { color: var(--green-500); }
+.nav-links {
+  display: flex; align-items: center; gap: 4px;
+}
+.nav-links a {
+  padding: 8px 16px; border-radius: 6px;
+  font-size: 0.875rem; font-weight: 500;
+  color: var(--text-muted);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--text-white);
+  background: rgba(0,87,255,0.12);
+}
+.nav-cta {
+  padding: 9px 22px;
+  background: var(--blue-500);
+  color: white;
+  border-radius: var(--r-sm);
+  font-size: 0.875rem; font-weight: 600;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.nav-cta:hover { background: var(--blue-400); transform: translateY(-1px); }
+
+/* ═══════════════════════════════════════════════
+   SHARED LAYOUT
+   ═══════════════════════════════════════════════ */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+.section { padding: 96px 0; }
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem; letter-spacing: 0.15em;
+  color: var(--green-500);
+  text-transform: uppercase; margin-bottom: 12px;
+}
+.section-title {
+  font-size: clamp(1.8rem, 3.5vw, 2.75rem);
+  font-weight: 800; color: var(--text-white);
+  line-height: 1.15; margin-bottom: 16px;
+}
+.section-sub {
+  font-size: 1.05rem; color: var(--text-muted);
+  max-width: 560px; line-height: 1.65;
+}
+.text-center { text-align: center; }
+.text-center .section-sub { margin: 0 auto; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; }
+.mt-8 { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.mt-48 { margin-top: 48px; }
+.mt-64 { margin-top: 64px; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 28px; border-radius: var(--r-sm);
+  font-weight: 600; font-size: 0.9rem;
+  transition: all 0.2s; cursor: pointer;
+}
+.btn-primary {
+  background: var(--blue-500); color: white;
+  box-shadow: 0 4px 20px rgba(0,87,255,0.35);
+}
+.btn-primary:hover { background: var(--blue-400); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,87,255,0.45); }
+.btn-outline {
+  background: transparent; color: var(--text-white);
+  border: 1.5px solid var(--border);
+}
+.btn-outline:hover { border-color: var(--blue-400); color: var(--blue-400); }
+.btn-green {
+  background: var(--green-500); color: var(--bg-dark);
+}
+.btn-green:hover { background: var(--green-400); transform: translateY(-2px); }
+
+/* Cards */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 28px;
+  transition: all 0.25s;
+}
+.card:hover {
+  border-color: rgba(0,87,255,0.4);
+  box-shadow: var(--glow-blue);
+  transform: translateY(-3px);
+}
+.card.green-hover:hover {
+  border-color: rgba(0,214,143,0.4);
+  box-shadow: var(--glow-green);
+}
+
+/* Tags */
+.tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 20px;
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.tag-blue { background: rgba(0,87,255,0.15); color: var(--blue-400); border: 1px solid rgba(0,87,255,0.25); }
+.tag-green { background: rgba(0,214,143,0.12); color: var(--green-500); border: 1px solid rgba(0,214,143,0.25); }
+.tag-amber { background: rgba(255,184,0,0.12); color: var(--amber); border: 1px solid rgba(255,184,0,0.25); }
+
+/* Dividers */
+.divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+/* ═══════════════════════════════════════════════
+   PAGE 1 — HOME
+   ═══════════════════════════════════════════════ */
+
+/* Hero */
+.hero {
+  min-height: 100vh;
+  padding-top: var(--nav-h);
+  background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,87,255,0.18) 0%, transparent 70%),
+              radial-gradient(ellipse 40% 40% at 80% 60%, rgba(0,214,143,0.08) 0%, transparent 60%),
+              var(--bg-dark);
+  display: flex; flex-direction: column; justify-content: center;
+  position: relative; overflow: hidden;
+}
+
+/* Grid background */
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(0,87,255,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,87,255,0.06) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+}
+
+.hero-inner {
+  position: relative; z-index: 2;
+  padding: 80px 40px 60px;
+  max-width: 1200px; margin: 0 auto; width: 100%;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 14px; border-radius: 20px;
+  background: rgba(0,214,143,0.1); border: 1px solid var(--border-g);
+  font-family: var(--font-mono); font-size: 0.75rem;
+  color: var(--green-500); letter-spacing: 0.1em;
+  margin-bottom: 28px;
+}
+.hero-eyebrow .pulse {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green-500);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+.hero h1 {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 900; color: var(--text-white);
+  line-height: 1.08; letter-spacing: -0.02em;
+  margin-bottom: 24px;
+}
+.hero h1 .gradient-text {
+  background: linear-gradient(90deg, var(--blue-400), var(--green-500));
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero p {
+  font-size: 1.15rem; color: var(--text-muted);
+  max-width: 520px; line-height: 1.7; margin-bottom: 40px;
+}
+.hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+
+/* Live stats strip */
+.hero-stats {
+  margin-top: 72px;
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+.hero-stat {
+  background: var(--bg-card);
+  padding: 22px 24px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.hero-stat .label {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  color: var(--text-muted); letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.hero-stat .value {
+  font-family: var(--font-mono); font-size: 1.6rem;
+  font-weight: 700; color: var(--text-white);
+  display: flex; align-items: baseline; gap: 4px;
+}
+.hero-stat .value .unit { font-size: 0.9rem; color: var(--text-muted); }
+.hero-stat .change {
+  font-size: 0.75rem; font-weight: 600;
+}
+.change.up { color: var(--green-500); }
+.change.down { color: var(--red); }
+
+/* Phase indicator – signature element */
+.phase-viz {
+  position: relative; width: 100%;
+  margin-top: 56px;
+}
+.phase-bars {
+  display: flex; gap: 3px;
+  height: 4px; border-radius: 2px; overflow: hidden;
+}
+.phase-bar { flex: 1; border-radius: 2px; }
+.phase-bar.r { background: #FF3B3B; animation: flicker-r 2.1s ease-in-out infinite; }
+.phase-bar.y { background: var(--amber); animation: flicker-y 2.1s 0.7s ease-in-out infinite; }
+.phase-bar.b { background: var(--blue-500); animation: flicker-b 2.1s 1.4s ease-in-out infinite; }
+@keyframes flicker-r { 0%,100%{opacity:1} 50%{opacity:0.5} }
+@keyframes flicker-y { 0%,100%{opacity:1} 50%{opacity:0.5} }
+@keyframes flicker-b { 0%,100%{opacity:1} 50%{opacity:0.5} }
+.phase-labels {
+  display: flex; gap: 3px;
+  margin-top: 6px;
+}
+.phase-labels span {
+  flex: 1; text-align: center;
+  font-family: var(--font-mono); font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
+/* Marquee strip */
+.marquee-section {
+  padding: 24px 0;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+.marquee-track {
+  display: flex; gap: 48px;
+  animation: marquee 22s linear infinite;
+  width: max-content;
+}
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.marquee-item {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 0.82rem; font-weight: 600;
+  color: var(--text-muted); white-space: nowrap;
+}
+.marquee-item .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green-500); flex-shrink: 0; }
+
+/* How it works */
+.steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; position: relative; }
+.steps::before {
+  content: '';
+  position: absolute; top: 28px; left: 12.5%; right: 12.5%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--blue-500), var(--green-500));
+  z-index: 0;
+}
+.step { padding: 0 16px; position: relative; z-index: 1; }
+.step-num {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--bg-dark);
+  border: 2px solid var(--blue-500);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 1rem; font-weight: 700;
+  color: var(--blue-400); margin-bottom: 20px;
+  box-shadow: 0 0 20px rgba(0,87,255,0.3);
+}
+.step h4 { font-size: 1rem; font-weight: 700; color: var(--text-white); margin-bottom: 8px; }
+.step p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+
+/* Testimonials */
+.testimonial-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+.testimonial-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 28px;
+}
+.stars { color: var(--amber); font-size: 0.9rem; margin-bottom: 14px; letter-spacing: 2px; }
+.testimonial-card blockquote {
+  font-size: 0.9rem; color: var(--text-body); line-height: 1.65;
+  font-style: italic; margin-bottom: 20px;
+}
+.testimonial-author { display: flex; align-items: center; gap: 12px; }
+.avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.9rem; color: white;
+  flex-shrink: 0;
+}
+.av1 { background: linear-gradient(135deg, #0057FF, #00D68F); }
+.av2 { background: linear-gradient(135deg, #7B2FFF, #0057FF); }
+.av3 { background: linear-gradient(135deg, #FF6B35, #FFB800); }
+.author-info .name { font-size: 0.85rem; font-weight: 700; color: var(--text-white); }
+.author-info .role { font-size: 0.75rem; color: var(--text-muted); }
+
+/* CTA Banner */
+.cta-banner {
+  background: linear-gradient(135deg, var(--blue-900), var(--bg-panel));
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 64px;
+  text-align: center; position: relative; overflow: hidden;
+}
+.cta-banner::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(0,87,255,0.12) 0%, transparent 70%);
+}
+.cta-banner h2 { font-size: 2.2rem; font-weight: 800; color: white; margin-bottom: 12px; position: relative; }
+.cta-banner p { color: var(--text-muted); margin-bottom: 32px; position: relative; }
+.cta-actions { display: flex; gap: 16px; justify-content: center; position: relative; }
+
+/* ═══════════════════════════════════════════════
+   PAGE 2 — PRODUCTS
+   ═══════════════════════════════════════════════ */
+.product-hero {
+  padding-top: calc(var(--nav-h) + 80px);
+  padding-bottom: 0;
+  background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(0,87,255,0.15) 0%, transparent 60%),
+              var(--bg-dark);
+}
+.product-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 56px; }
+.product-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  transition: all 0.25s;
+}
+.product-card:hover { transform: translateY(-4px); box-shadow: var(--glow-blue); border-color: rgba(0,87,255,0.4); }
+.product-img {
+  height: 200px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 5rem;
+  position: relative; overflow: hidden;
+}
+.product-img.blue-bg { background: linear-gradient(135deg, rgba(0,51,160,0.4), rgba(0,87,255,0.2)); }
+.product-img.green-bg { background: linear-gradient(135deg, rgba(0,100,70,0.4), rgba(0,214,143,0.15)); }
+.product-img.mixed-bg { background: linear-gradient(135deg, rgba(0,51,160,0.3), rgba(0,100,70,0.3)); }
+.product-body { padding: 24px; }
+.product-body h3 { font-size: 1.05rem; font-weight: 700; color: var(--text-white); margin-bottom: 8px; }
+.product-body p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px; }
+.product-specs { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+.spec-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 0.8rem;
+}
+.spec-row .sk { color: var(--text-muted); }
+.spec-row .sv { color: var(--text-white); font-family: var(--font-mono); font-weight: 600; }
+
+/* Tech specs table */
+.spec-table { width: 100%; border-collapse: collapse; margin-top: 32px; }
+.spec-table th {
+  text-align: left; padding: 12px 16px;
+  background: var(--bg-panel);
+  font-family: var(--font-mono); font-size: 0.72rem;
+  color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+.spec-table td {
+  padding: 12px 16px;
+  font-size: 0.85rem; color: var(--text-body);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.spec-table tr:hover td { background: rgba(0,87,255,0.04); }
+.spec-table td:first-child { color: var(--text-muted); }
+.spec-table td:nth-child(2) { font-family: var(--font-mono); color: var(--text-white); }
+
+/* ═══════════════════════════════════════════════
+   PAGE 3 — FEATURES
+   ═══════════════════════════════════════════════ */
+.features-hero {
+  padding-top: calc(var(--nav-h) + 80px);
+  background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(0,214,143,0.1) 0%, transparent 60%),
+              var(--bg-dark);
+  text-align: center;
+}
+.feature-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 56px; }
+.feature-icon {
+  width: 52px; height: 52px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; margin-bottom: 18px;
+}
+.fi-blue { background: rgba(0,87,255,0.12); border: 1px solid rgba(0,87,255,0.2); }
+.fi-green { background: rgba(0,214,143,0.1); border: 1px solid rgba(0,214,143,0.2); }
+.fi-amber { background: rgba(255,184,0,0.1); border: 1px solid rgba(255,184,0,0.2); }
+.card h3 { font-size: 1.05rem; font-weight: 700; color: var(--text-white); margin-bottom: 10px; }
+.card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.65; }
+.feature-list { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+.feature-list li { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--text-body); }
+.feature-list li::before { content: '✓'; color: var(--green-500); font-weight: 700; flex-shrink: 0; }
+
+/* Comparison table */
+.comparison-table { width: 100%; border-collapse: collapse; margin-top: 40px; }
+.comparison-table th {
+  padding: 16px 20px;
+  background: var(--bg-panel);
+  font-size: 0.85rem; font-weight: 700; color: var(--text-white);
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+.comparison-table th:first-child { text-align: left; }
+.comparison-table th.highlight { background: rgba(0,87,255,0.2); color: var(--blue-400); }
+.comparison-table td {
+  padding: 14px 20px;
+  font-size: 0.85rem; color: var(--text-body);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  text-align: center;
+}
+.comparison-table td:first-child { text-align: left; color: var(--text-muted); }
+.comparison-table td.highlight { background: rgba(0,87,255,0.05); }
+.comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+.comparison-table tr:hover td.highlight { background: rgba(0,87,255,0.08); }
+.check { color: var(--green-500); font-size: 1rem; }
+.cross { color: var(--red); font-size: 0.9rem; }
+.partial { color: var(--amber); }
+
+/* ═══════════════════════════════════════════════
+   PAGE 4 — DASHBOARD DEMO
+   ═══════════════════════════════════════════════ */
+.demo-hero {
+  padding-top: calc(var(--nav-h) + 60px);
+  padding-bottom: 60px;
+  background: var(--bg-dark);
+}
+/* The dashboard mockup */
+.dashboard-shell {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  margin-top: 40px;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+}
+.dashboard-topbar {
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.topbar-left { display: flex; align-items: center; gap: 20px; }
+.topbar-logo { font-weight: 800; font-size: 0.9rem; color: white; }
+.topbar-logo span { color: var(--green-500); }
+.topbar-tabs { display: flex; gap: 2px; }
+.topbar-tab {
+  padding: 6px 14px; border-radius: 6px;
+  font-size: 0.78rem; font-weight: 500; color: var(--text-muted);
+  cursor: pointer; transition: all 0.2s;
+}
+.topbar-tab.active { background: rgba(0,87,255,0.15); color: var(--blue-400); }
+.topbar-right { display: flex; align-items: center; gap: 16px; }
+.live-badge {
+  display: flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono); font-size: 0.7rem; color: var(--green-500);
+}
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green-500); animation: pulse 1.5s ease-in-out infinite; }
+.topbar-time { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted); }
+
+.dashboard-body { display: flex; }
+.dash-sidebar {
+  width: 56px; background: var(--bg-panel);
+  border-right: 1px solid var(--border);
+  padding: 16px 0;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.sidebar-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; cursor: pointer; transition: all 0.2s;
+}
+.sidebar-icon.active { background: rgba(0,87,255,0.2); }
+.sidebar-icon:hover { background: rgba(255,255,255,0.06); }
+
+.dash-main { flex: 1; padding: 24px; min-width: 0; }
+
+/* KPI row */
+.kpi-row { display: grid; grid-template-columns: repeat(6,1fr); gap: 12px; margin-bottom: 20px; }
+.kpi {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.kpi .k-label { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text-muted); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 6px; }
+.kpi .k-val { font-family: var(--font-mono); font-size: 1.15rem; font-weight: 700; color: var(--text-white); }
+.kpi .k-unit { font-size: 0.65rem; color: var(--text-muted); }
+.kpi .k-change { font-size: 0.68rem; margin-top: 4px; }
+
+/* Chart area */
+.dash-charts { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 20px; }
+.chart-panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+}
+.chart-panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.chart-panel-title { font-size: 0.82rem; font-weight: 600; color: var(--text-white); }
+.chart-panel-sub { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-muted); }
+
+/* SVG Waveform chart */
+.wave-chart { width: 100%; }
+
+/* Donut ring */
+.donut-container { display: flex; align-items: center; gap: 20px; }
+.donut-labels { display: flex; flex-direction: column; gap: 8px; }
+.donut-label { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; }
+.dl-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dl-name { color: var(--text-muted); }
+.dl-val { color: var(--text-white); font-weight: 600; font-family: var(--font-mono); }
+
+/* Phase table */
+.phase-table { width: 100%; border-collapse: collapse; }
+.phase-table th { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted); padding: 6px 8px; text-align: right; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); }
+.phase-table th:first-child { text-align: left; }
+.phase-table td { padding: 8px 8px; font-family: var(--font-mono); font-size: 0.78rem; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.03); }
+.phase-table td:first-child { text-align: left; font-weight: 600; }
+.phase-table tr:last-child td { border-bottom: none; }
+.ph-r td:first-child { color: #FF7070; }
+.ph-y td:first-child { color: var(--amber); }
+.ph-b td:first-child { color: var(--blue-400); }
+.val-ok { color: var(--green-500); }
+.val-warn { color: var(--amber); }
+.val-bad { color: var(--red); }
+
+/* Alerts */
+.alerts-panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+}
+.alert-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.alert-row:last-child { border-bottom: none; }
+.alert-icon { font-size: 0.85rem; flex-shrink: 0; margin-top: 2px; }
+.alert-body .al-msg { font-size: 0.78rem; color: var(--text-body); }
+.alert-body .al-time { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted); margin-top: 2px; }
+
+/* Bottom row */
+.dash-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* Energy bar */
+.energy-bars { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+.ebar { display: flex; flex-direction: column; gap: 4px; }
+.ebar-label { display: flex; justify-content: space-between; font-size: 0.72rem; }
+.ebar-label .el { color: var(--text-muted); }
+.ebar-label .ev { font-family: var(--font-mono); color: var(--text-white); font-weight: 600; }
+.ebar-track { height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.ebar-fill { height: 100%; border-radius: 3px; }
+.ef-blue { background: linear-gradient(90deg, var(--blue-500), var(--blue-400)); }
+.ef-green { background: linear-gradient(90deg, var(--green-500), var(--green-400)); }
+.ef-amber { background: linear-gradient(90deg, var(--amber), #FFD040); }
+
+/* Bill panel */
+.bill-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+.bill-item {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 12px;
+}
+.bill-item .bi-label { font-size: 0.68rem; color: var(--text-muted); margin-bottom: 4px; }
+.bill-item .bi-val { font-family: var(--font-mono); font-size: 1.05rem; font-weight: 700; color: var(--text-white); }
+.bill-item .bi-sub { font-size: 0.65rem; color: var(--text-muted); margin-top: 2px; }
+
+/* ═══════════════════════════════════════════════
+   PAGE 5 — PRICING
+   ═══════════════════════════════════════════════ */
+.pricing-hero {
+  padding-top: calc(var(--nav-h) + 80px);
+  text-align: center;
+  background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(0,87,255,0.12) 0%, transparent 60%),
+              var(--bg-dark);
+}
+.pricing-toggle {
+  display: inline-flex; align-items: center; gap: 12px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 30px; padding: 6px;
+  margin: 32px auto 0; font-size: 0.85rem;
+}
+.toggle-btn {
+  padding: 8px 20px; border-radius: 24px;
+  font-size: 0.85rem; font-weight: 600;
+  color: var(--text-muted); background: transparent;
+  transition: all 0.2s; cursor: pointer;
+}
+.toggle-btn.active { background: var(--blue-500); color: white; }
+.save-badge {
+  background: rgba(0,214,143,0.15); color: var(--green-500);
+  border: 1px solid var(--border-g);
+  padding: 3px 8px; border-radius: 12px;
+  font-size: 0.7rem; font-weight: 700;
+}
+.pricing-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 48px; }
+.pricing-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 36px 28px;
+  position: relative;
+  transition: all 0.25s;
+}
+.pricing-card:hover { transform: translateY(-4px); }
+.pricing-card.featured {
+  border-color: var(--blue-500);
+  box-shadow: var(--glow-blue);
+}
+.popular-badge {
+  position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+  background: linear-gradient(90deg, var(--blue-500), var(--blue-400));
+  color: white; padding: 4px 18px; border-radius: 20px;
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+.plan-name { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; }
+.plan-price {
+  font-family: var(--font-mono); font-size: 2.8rem; font-weight: 800;
+  color: var(--text-white); margin: 12px 0 4px;
+  display: flex; align-items: flex-start; gap: 2px;
+}
+.plan-price .currency { font-size: 1.2rem; margin-top: 10px; }
+.plan-price .per { font-size: 0.85rem; color: var(--text-muted); align-self: flex-end; margin-bottom: 8px; }
+.plan-desc { font-size: 0.83rem; color: var(--text-muted); margin-bottom: 28px; }
+.plan-features { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+.plan-feature { display: flex; align-items: flex-start; gap: 10px; font-size: 0.85rem; color: var(--text-body); }
+.plan-feature .pf-icon { flex-shrink: 0; margin-top: 2px; }
+.plan-feature.disabled { opacity: 0.35; }
+.divider-sm { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+.addon-note { font-size: 0.75rem; color: var(--text-muted); margin-top: 16px; text-align: center; }
+
+/* Add-ons */
+.addon-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-top: 40px; }
+.addon-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 20px;
+}
+.addon-card .a-icon { font-size: 1.5rem; margin-bottom: 10px; }
+.addon-card .a-name { font-size: 0.88rem; font-weight: 700; color: var(--text-white); margin-bottom: 4px; }
+.addon-card .a-desc { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px; }
+.addon-card .a-price { font-family: var(--font-mono); font-size: 0.9rem; font-weight: 700; color: var(--green-500); }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 4px; margin-top: 40px; max-width: 760px; margin-left: auto; margin-right: auto; }
+.faq-item {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+}
+.faq-q {
+  padding: 18px 22px;
+  display: flex; justify-content: space-between; align-items: center;
+  cursor: pointer;
+  font-size: 0.9rem; font-weight: 600; color: var(--text-white);
+}
+.faq-q:hover { color: var(--blue-400); }
+.faq-a {
+  padding: 0 22px 18px;
+  font-size: 0.85rem; color: var(--text-muted); line-height: 1.65;
+  display: none;
+}
+.faq-item.open .faq-a { display: block; }
+.faq-chevron { transition: transform 0.2s; flex-shrink: 0; }
+.faq-item.open .faq-chevron { transform: rotate(180deg); }
+
+/* ═══════════════════════════════════════════════
+   PAGE 6 — CONTACT
+   ═══════════════════════════════════════════════ */
+.contact-hero {
+  padding-top: calc(var(--nav-h) + 80px);
+  background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(0,214,143,0.08) 0%, transparent 60%),
+              var(--bg-dark);
+}
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-top: 60px; align-items: start; }
+.contact-info-cards { display: flex; flex-direction: column; gap: 16px; }
+.contact-info-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 22px;
+  display: flex; align-items: flex-start; gap: 16px;
+}
+.ci-icon {
+  width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+}
+.ci-blue { background: rgba(0,87,255,0.12); border: 1px solid rgba(0,87,255,0.2); }
+.ci-green { background: rgba(0,214,143,0.1); border: 1px solid rgba(0,214,143,0.2); }
+.ci-amber { background: rgba(255,184,0,0.1); border: 1px solid rgba(255,184,0,0.2); }
+.ci-body .ci-label { font-size: 0.72rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 4px; }
+.ci-body .ci-val { font-size: 0.9rem; color: var(--text-white); font-weight: 500; }
+.ci-body .ci-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+
+/* Form */
+.contact-form {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 36px;
+}
+.contact-form h3 { font-size: 1.3rem; font-weight: 700; color: var(--text-white); margin-bottom: 6px; }
+.contact-form .form-sub { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 28px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.form-group label { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); }
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--text-white);
+  padding: 11px 14px;
+  font-size: 0.875rem;
+  font-family: var(--font-main);
+  outline: none; width: 100%;
+  transition: border-color 0.2s;
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder { color: var(--text-muted); }
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus { border-color: var(--blue-500); }
+.form-group select option { background: var(--bg-panel); }
+.form-group textarea { resize: vertical; min-height: 110px; }
+.form-submit { width: 100%; margin-top: 8px; justify-content: center; font-size: 0.95rem; padding: 14px; }
+
+/* Map placeholder */
+.map-placeholder {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r-md); height: 220px; margin-top: 16px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; color: var(--text-muted); font-size: 0.85rem;
+}
+.map-placeholder .map-pin { font-size: 2.5rem; }
+
+/* Success message */
+.form-success {
+  display: none;
+  text-align: center; padding: 40px 20px;
+}
+.form-success .success-icon { font-size: 3rem; margin-bottom: 16px; }
+.form-success h4 { font-size: 1.2rem; font-weight: 700; color: var(--text-white); margin-bottom: 8px; }
+.form-success p { font-size: 0.85rem; color: var(--text-muted); }
+
+/* Coverage grid */
+.coverage-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-top: 40px; }
+.coverage-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 20px; text-align: center;
+}
+.coverage-card .c-icon { font-size: 2rem; margin-bottom: 10px; }
+.coverage-card .c-city { font-size: 0.9rem; font-weight: 700; color: var(--text-white); margin-bottom: 4px; }
+.coverage-card .c-sub { font-size: 0.75rem; color: var(--text-muted); }
+
+/* ═══════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════ */
+footer {
+  background: var(--bg-panel);
+  border-top: 1px solid var(--border);
+  padding: 60px 0 32px;
+}
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+.footer-brand .fb-logo { font-size: 1.2rem; font-weight: 800; color: white; margin-bottom: 12px; }
+.footer-brand .fb-logo span { color: var(--green-500); }
+.footer-brand p { font-size: 0.83rem; color: var(--text-muted); line-height: 1.65; max-width: 280px; }
+.footer-col h5 { font-size: 0.78rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 16px; }
+.footer-col ul { display: flex; flex-direction: column; gap: 8px; }
+.footer-col ul li a { font-size: 0.84rem; color: var(--text-muted); transition: color 0.2s; cursor: pointer; }
+.footer-col ul li a:hover { color: var(--blue-400); }
+.footer-bottom {
+  border-top: 1px solid var(--border); padding-top: 24px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-bottom p { font-size: 0.78rem; color: var(--text-muted); }
+.footer-socials { display: flex; gap: 12px; }
+.social-btn {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; color: var(--text-muted);
+  transition: all 0.2s; cursor: pointer;
+}
+.social-btn:hover { background: rgba(0,87,255,0.15); color: var(--blue-400); border-color: rgba(0,87,255,0.3); }
+
+/* WhatsApp FAB */
+.whatsapp-fab {
+  position: fixed; bottom: 28px; right: 28px; z-index: 999;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: #25D366;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.45);
+  cursor: pointer; transition: all 0.25s;
+  text-decoration: none;
+  animation: fab-bounce 3s ease-in-out infinite;
+}
+.whatsapp-fab:hover { transform: scale(1.1); box-shadow: 0 8px 30px rgba(37,211,102,0.6); }
+@keyframes fab-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.whatsapp-fab:hover { animation: none; }
+
+/* ═══════════════════════════════════════════════
+   UTILITIES
+   ═══════════════════════════════════════════════ */
+.badge-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+
+/* Animated counter */
+.counter { font-family: var(--font-mono); }
+
+/* Section alternating bg */
+.section-alt { background: var(--bg-card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+/* Mobile hamburger – simplified */
+.mobile-menu-btn { display: none; }
+
+@media (max-width: 768px) {
+  nav.site-nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .container { padding: 0 20px; }
+  .grid-2, .grid-3, .grid-4, .steps { grid-template-columns: 1fr; }
+  .hero-stats { grid-template-columns: 1fr 1fr; }
+  .product-grid, .feature-cards, .pricing-grid, .testimonial-grid { grid-template-columns: 1fr; }
+  .contact-grid, .footer-grid { grid-template-columns: 1fr; }
+  .kpi-row { grid-template-columns: repeat(3,1fr); }
+  .dash-charts { grid-template-columns: 1fr; }
+  .dash-bottom { grid-template-columns: 1fr; }
+  .steps::before { display: none; }
+  .hero h1 { font-size: 2rem; }
+}
+</style>
+</head>
+<body>
+<!-- ════════════════════════════════════════════════════════
+     BUILT-IN ADMIN PANEL — ALL-IN-ONE
+════════════════════════════════════════════════════════ -->
+<style>
+/* ── GEAR BUTTON ── */
+#adm-gear{position:fixed;bottom:96px;right:28px;z-index:9997;width:46px;height:46px;border-radius:50%;background:#0057FF;border:none;cursor:pointer;font-size:1.1rem;color:#fff;box-shadow:0 4px 18px rgba(0,87,255,.5);display:flex;align-items:center;justify-content:center;transition:all .2s;}
+#adm-gear:hover{transform:scale(1.12);background:#3D7EFF;}
+
+/* ── LOGIN ── */
+#adm-login{display:none;position:fixed;inset:0;z-index:9998;background:rgba(5,8,18,.97);backdrop-filter:blur(12px);align-items:center;justify-content:center;}
+#adm-login.show{display:flex;}
+.alog-box{background:#0E1628;border:1px solid rgba(0,87,255,.35);border-radius:18px;padding:44px 40px;width:390px;box-shadow:0 0 80px rgba(0,87,255,.22);}
+.alog-icon{text-align:center;font-size:2.2rem;margin-bottom:8px;}
+.alog-box h2{text-align:center;font-size:1.25rem;font-weight:800;color:#fff;margin-bottom:4px;}
+.alog-box .alog-sub{text-align:center;font-size:.78rem;color:#8499CC;margin-bottom:28px;}
+.alog-f{margin-bottom:14px;}
+.alog-f label{display:block;font-size:.7rem;font-weight:700;color:#8499CC;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;}
+.alog-f input{width:100%;background:#121D35;border:1px solid rgba(0,87,255,.22);border-radius:8px;color:#fff;padding:11px 14px;font-size:.875rem;outline:none;font-family:inherit;transition:border-color .2s;}
+.alog-f input:focus{border-color:#0057FF;}
+.alog-err{color:#FF3B3B;font-size:.75rem;text-align:center;min-height:18px;margin-bottom:6px;}
+.alog-btn{width:100%;padding:13px;border:none;border-radius:8px;background:#0057FF;color:#fff;font-size:.92rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s;}
+.alog-btn:hover{background:#3D7EFF;}
+.alog-note{text-align:center;font-size:.7rem;color:#8499CC;margin-top:14px;}
+
+/* ── ADMIN SHELL ── */
+#adm-shell{display:none;position:fixed;inset:0;z-index:9997;flex-direction:row;}
+#adm-shell.show{display:flex;}
+
+/* ── SIDEBAR ── */
+.adm-sb{width:220px;flex-shrink:0;background:#080D1A;border-right:1px solid rgba(0,87,255,.15);display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+.adm-sb-head{padding:18px 16px 14px;border-bottom:1px solid rgba(0,87,255,.12);}
+.adm-sb-head .sb-brand{font-size:1rem;font-weight:800;color:#fff;}
+.adm-sb-head .sb-brand span{color:#00D68F;}
+.adm-sb-head .sb-badge{display:inline-block;margin-top:5px;background:rgba(0,87,255,.15);color:#3D7EFF;border:1px solid rgba(0,87,255,.25);padding:2px 9px;border-radius:20px;font-size:.6rem;font-weight:700;letter-spacing:.07em;}
+.adm-nav{display:flex;flex-direction:column;position:static;flex:1;padding:8px 0;overflow-y:auto;}
+.adm-nav-lbl{padding:10px 14px 3px;font-size:.58rem;font-weight:700;letter-spacing:.14em;color:rgba(132,153,204,.4);text-transform:uppercase;}
+.anav{display:flex;align-items:center;gap:9px;padding:9px 10px;margin:1px 6px;border-radius:7px;font-size:.8rem;font-weight:500;color:#8499CC;cursor:pointer;transition:all .15s;user-select:none;position:relative;}
+.anav:hover{background:rgba(0,87,255,.1);color:#fff;}
+.anav.active{background:rgba(0,87,255,.2);color:#3D7EFF;font-weight:600;}
+.enq-badge{margin-left:auto;background:#FF3B3B;color:#fff;font-size:.62rem;font-weight:700;padding:1px 7px;border-radius:20px;line-height:1.5;}
+
+/* ── CUSTOMER ENQUIRIES TAB ── */
+.enq-toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px;}
+.enq-stats{font-size:.78rem;color:#8499CC;}
+.enq-stats strong{color:#fff;}
+.enq-toolbar-actions{display:flex;gap:8px;}
+.enq-btn{background:rgba(0,87,255,.12);border:1px solid rgba(0,87,255,.25);color:#3D7EFF;padding:7px 13px;border-radius:7px;font-size:.74rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;}
+.enq-btn:hover{background:rgba(0,87,255,.22);}
+.enq-btn-danger{background:rgba(255,59,59,.1);border-color:rgba(255,59,59,.22);color:#FF3B3B;}
+.enq-btn-danger:hover{background:rgba(255,59,59,.2);}
+.enq-empty{text-align:center;padding:40px 20px;color:#8499CC;}
+.enq-empty code{background:rgba(255,255,255,.06);padding:1px 6px;border-radius:4px;font-size:.78em;}
+.enq-list{display:flex;flex-direction:column;gap:10px;}
+.enq-card{background:#0C1220;border:1px solid rgba(0,87,255,.15);border-left:3px solid #3D7EFF;border-radius:9px;padding:14px 16px;}
+.enq-card.status-contacted{border-left-color:#F5A623;}
+.enq-card.status-closed{border-left-color:#00D68F;opacity:.72;}
+.enq-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:8px;}
+.enq-name{font-size:.92rem;font-weight:700;color:#fff;}
+.enq-company{font-size:.75rem;color:#8499CC;margin-top:1px;}
+.enq-time{font-size:.68rem;color:#5A6B8C;white-space:nowrap;}
+.enq-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px 16px;margin:10px 0;}
+.enq-field{font-size:.74rem;}
+.enq-field-label{color:#5A6B8C;font-size:.64rem;text-transform:uppercase;letter-spacing:.05em;}
+.enq-field-val{color:#D7E0F5;margin-top:1px;}
+.enq-msg{font-size:.78rem;color:#B9C5E0;background:rgba(255,255,255,.03);border-radius:7px;padding:9px 11px;margin-top:8px;line-height:1.5;}
+.enq-card-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px;}
+.enq-status-select{background:#0A0F1E;border:1px solid rgba(0,87,255,.2);color:#D7E0F5;padding:5px 9px;border-radius:6px;font-size:.72rem;font-family:inherit;cursor:pointer;}
+.enq-link{font-size:.72rem;color:#3D7EFF;text-decoration:none;font-weight:600;padding:5px 10px;border-radius:6px;background:rgba(0,87,255,.1);}
+.enq-link:hover{background:rgba(0,87,255,.2);}
+.enq-link.wa{color:#25D366;background:rgba(37,211,102,.1);}
+.enq-link.wa:hover{background:rgba(37,211,102,.2);}
+.enq-del{margin-left:auto;font-size:.72rem;color:#FF3B3B;background:rgba(255,59,59,.1);border:1px solid rgba(255,59,59,.2);padding:5px 10px;border-radius:6px;cursor:pointer;font-family:inherit;}
+.enq-del:hover{background:rgba(255,59,59,.2);}
+.adm-sb-foot{padding:12px 14px;border-top:1px solid rgba(0,87,255,.12);display:flex;align-items:center;justify-content:space-between;}
+.adm-sb-foot .sb-user{font-size:.72rem;color:#8499CC;}
+.adm-sb-foot .sb-user strong{display:block;color:#fff;font-size:.75rem;}
+.sb-logout{background:rgba(255,59,59,.12);border:1px solid rgba(255,59,59,.2);color:#FF3B3B;padding:5px 10px;border-radius:6px;font-size:.68rem;font-weight:600;cursor:pointer;transition:all .18s;}
+.sb-logout:hover{background:rgba(255,59,59,.22);}
+
+/* ── MAIN AREA ── */
+.adm-main{flex:1;min-width:0;display:flex;flex-direction:column;background:#0A0F1E;overflow:hidden;}
+.adm-top{background:#0C1220;border-bottom:1px solid rgba(0,87,255,.13);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:12px;flex-wrap:wrap;}
+.adm-top h1{font-size:1.05rem;font-weight:700;color:#fff;white-space:nowrap;}
+.adm-top .at-sub{font-size:.72rem;color:#8499CC;white-space:nowrap;}
+.adm-top-r{display:flex;gap:6px;align-items:center;flex-wrap:nowrap;flex-shrink:0;}
+.at-btn{padding:7px 13px;border-radius:7px;font-size:.76rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;border:1px solid transparent;}
+.at-save{background:#00D68F;color:#0A0F1E;border-color:#00D68F;}
+.at-save:hover{background:#2EEDB5;border-color:#2EEDB5;}
+.at-preview{background:rgba(61,126,255,.12);color:#3D7EFF;border:1px solid rgba(0,87,255,.28);}
+.at-preview:hover{background:rgba(0,87,255,.22);color:#fff;}
+.at-back{background:rgba(0,87,255,.12);color:#3D7EFF;border:1px solid rgba(0,87,255,.22);}
+.at-back:hover{background:rgba(0,87,255,.22);color:#fff;}
+.at-reset{background:rgba(255,59,59,.1);color:#FF3B3B;border:1px solid rgba(255,59,59,.22);}
+.at-reset:hover{background:rgba(255,59,59,.2);}
+@media(max-width:600px){
+  .adm-top{padding:8px 12px;}
+  .at-btn{padding:6px 10px;font-size:.7rem;}
+  .adm-top-r{gap:4px;}
+}
+
+/* ── CONTENT ── */
+.adm-body{flex:1;overflow-y:auto;padding:18px 22px;}
+.atab{display:none;}
+.atab.active{display:block;}
+
+/* ── CARDS ── */
+.acard{background:#0E1628;border:1px solid rgba(0,87,255,.15);border-radius:11px;margin-bottom:14px;overflow:hidden;}
+.acard-h{padding:13px 18px;background:#111926;border-bottom:1px solid rgba(0,87,255,.1);display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;font-size:.87rem;font-weight:700;color:#fff;}
+.acard-h:hover{color:#3D7EFF;}
+.acard-h .achev{color:#8499CC;transition:transform .2s;font-size:.8rem;}
+.acard-h.open .achev{transform:rotate(180deg);}
+.acard-b{padding:16px 18px;}
+.acard-b.hide{display:none;}
+.abadge{font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:9px;margin-left:8px;}
+.ab-g{background:rgba(0,214,143,.15);color:#00D68F;border:1px solid rgba(0,214,143,.25);}
+.ab-b{background:rgba(0,87,255,.15);color:#3D7EFF;border:1px solid rgba(0,87,255,.25);}
+
+/* ── FORM FIELDS ── */
+.af{margin-bottom:11px;}
+.af label{display:block;font-size:.65rem;font-weight:700;color:#8499CC;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;}
+.af input,.af textarea,.af select{width:100%;background:#07101F;border:1px solid rgba(0,87,255,.18);border-radius:7px;color:#fff;padding:8px 11px;font-size:.82rem;outline:none;font-family:inherit;transition:border-color .15s;}
+.af input:focus,.af textarea:focus{border-color:#0057FF;}
+.af textarea{resize:vertical;min-height:65px;}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.anote{font-size:.7rem;color:#8499CC;background:rgba(0,87,255,.07);border:1px solid rgba(0,87,255,.14);border-radius:7px;padding:8px 12px;margin-top:8px;}
+
+/* ── TABLE ── */
+.atbl-wrap{overflow-x:auto;}
+.atbl{width:100%;border-collapse:collapse;}
+.atbl th{text-align:left;padding:8px 10px;font-size:.62rem;color:#8499CC;border-bottom:1px solid rgba(0,87,255,.1);text-transform:uppercase;letter-spacing:.07em;}
+.atbl td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:middle;}
+.atbl tr:last-child td{border-bottom:none;}
+.atbl td:first-child{font-size:.78rem;color:#8499CC;font-weight:600;white-space:nowrap;}
+.atbl input{background:#07101F;border:1px solid rgba(0,87,255,.16);border-radius:5px;color:#fff;padding:5px 7px;font-size:.78rem;width:100%;outline:none;font-family:monospace;}
+.atbl input:focus{border-color:#0057FF;}
+
+/* ── COLOR PICKERS ── */
+.clr-grid{display:flex;flex-wrap:wrap;gap:16px;margin-top:8px;}
+.clrpk{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.62rem;color:#8499CC;text-align:center;}
+.clrpk input[type=color]{width:46px;height:46px;padding:2px;border-radius:9px;cursor:pointer;border:1px solid rgba(0,87,255,.2);background:transparent;}
+.clrval{font-family:monospace;font-size:.6rem;color:#8499CC;}
+
+/* ── BOTTOM ACTION BAR ── */
+.adm-bottom-bar{
+  background:#0C1220;
+  border-top:1px solid rgba(0,87,255,.18);
+  padding:12px 22px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:10px;
+  flex-shrink:0;
+  box-shadow:0 -4px 20px rgba(0,0,0,.35);
+}
+.adm-bottom-bar .at-btn{padding:10px 22px;font-size:.82rem;}
+.adm-bottom-bar .at-save{min-width:150px;justify-content:center;display:inline-flex;align-items:center;gap:6px;}
+@media(max-width:480px){
+  .adm-bottom-bar{padding:10px 14px;gap:7px;}
+  .adm-bottom-bar .at-btn{padding:9px 14px;font-size:.76rem;}
+}
+
+/* ── TOAST ── */
+#adm-toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);padding:11px 28px;border-radius:30px;font-size:.88rem;font-weight:700;z-index:99999;display:none;opacity:0;transition:opacity .3s;white-space:nowrap;box-shadow:0 8px 28px rgba(0,0,0,.4);}
+
+/* ── MOBILE SIDEBAR TOGGLE ── */
+#adm-sb-toggle{display:none;background:none;border:none;color:#3D7EFF;font-size:1.3rem;cursor:pointer;padding:4px 8px;border-radius:6px;line-height:1;flex-shrink:0;}
+#adm-sb-toggle:hover{background:rgba(0,87,255,.12);}
+#adm-sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9996;}
+#adm-sb-overlay.show{display:block;}
+
+@media(max-width:768px){
+  .adm-sb{position:fixed;left:-220px;top:0;height:100vh;z-index:9997;transition:left .22s ease;box-shadow:4px 0 24px rgba(0,0,0,.5);}
+  .adm-sb.open{left:0;}
+  #adm-sb-toggle{display:flex;align-items:center;justify-content:center;}
+  .adm-top{gap:8px;}
+  .adm-top>div:first-child{flex:1;min-width:0;}
+  .adm-top h1{font-size:.9rem;}
+  .adm-top-r{gap:5px;}
+  .at-btn{padding:6px 9px;font-size:.7rem;}
+  .adm-body{padding:12px 14px;}
+  .r2,.r3{grid-template-columns:1fr!important;}
+}
+@media(max-width:480px){
+  .at-btn{padding:6px 8px;font-size:.68rem;}
+  .adm-top-r{gap:4px;}
+}
+</style>
+
+<!-- GEAR BUTTON -->
+<button id="adm-gear" onclick="admOpenLogin()" title="Admin Panel">⚙</button>
+
+<!-- LOGIN -->
+<div id="adm-login">
+  <div class="alog-box">
+    <div class="alog-icon">🔐</div>
+    <h2>Admin Login</h2>
+    <p class="alog-sub">PowerGrid Pro — Content Management</p>
+    <div class="alog-f"><label>Username</label><input id="al-u" type="text" placeholder="Enter username" onkeydown="if(event.key==='Enter')admLogin()"></div>
+    <div class="alog-f"><label>Password</label><input id="al-p" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')admLogin()"></div>
+    <div id="al-err" class="alog-err"></div>
+    <button class="alog-btn" onclick="admLogin()">Login to Admin Panel</button>
+    <p class="alog-note">Contact your system administrator for credentials.</p>
+  </div>
+</div>
+
+<!-- ADMIN SHELL -->
+<div id="adm-sb-overlay" onclick="closeSidebar()"></div>
+<div id="adm-shell">
+
+  <!-- SIDEBAR -->
+  <div class="adm-sb">
+    <div class="adm-sb-head">
+      <div class="sb-brand">PowerGrid<span>Pro</span></div>
+      <div class="sb-badge">ADMIN PANEL</div>
+    </div>
+    <nav class="adm-nav">
+      <div class="adm-nav-lbl">Leads</div>
+      <div class="anav"        id="anav-enquiries" onclick="aTab('enquiries')">📨 Customer Enquiries<span id="enq-nav-badge" class="enq-badge" style="display:none">0</span></div>
+      <div class="adm-nav-lbl">Pages</div>
+      <div class="anav active" id="anav-home"     onclick="aTab('home')">🏠 Home Page</div>
+      <div class="anav"        id="anav-products"  onclick="aTab('products')">📦 Products</div>
+      <div class="anav"        id="anav-features"  onclick="aTab('features')">⚡ Features</div>
+      <div class="anav"        id="anav-pricing"   onclick="aTab('pricing')">💰 Pricing</div>
+      <div class="anav"        id="anav-contact"   onclick="aTab('contact')">📍 Contact</div>
+      <div class="adm-nav-lbl">Global</div>
+      <div class="anav"        id="anav-brand"     onclick="aTab('brand')">🎨 Brand & Colors</div>
+      <div class="anav"        id="anav-whatsapp"  onclick="aTab('whatsapp')">💬 WhatsApp</div>
+    </nav>
+    <div class="adm-sb-foot">
+      <div class="sb-user"><strong>Administrator</strong>Full Access</div>
+      <button class="sb-logout" onclick="admLogout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="adm-main">
+    <div class="adm-top">
+      <button id="adm-sb-toggle" onclick="toggleSidebar()" title="Menu">☰</button>
+      <div>
+        <h1 id="adm-tab-h">Home Page</h1>
+        <div class="at-sub" id="adm-tab-s">Edit hero, steps, testimonials, CTA</div>
+      </div>
+      <div class="adm-top-r"></div>
+    </div>
+
+    <div class="adm-body">
+
+      <!-- ══ ENQUIRIES TAB ══ -->
+      <div id="atab-enquiries" class="atab">
+        <div class="acard">
+          <div class="acard-h open" onclick="toggleAC(this)">📨 Leads from Website Form<span class="achev">▾</span></div>
+          <div class="acard-b">
+            <div class="enq-toolbar">
+              <div class="enq-stats" id="enq-stats">Loading…</div>
+              <div class="enq-toolbar-actions">
+                <button class="enq-btn" onclick="loadEnquiries()">🔄 Refresh</button>
+                <button class="enq-btn enq-btn-danger" onclick="clearAllEnquiries()">🗑 Clear All</button>
+              </div>
+            </div>
+            <div id="enq-empty" class="enq-empty" style="display:none">
+              <div style="font-size:2rem;margin-bottom:8px">📭</div>
+              <p>No enquiries yet.</p>
+              <p style="font-size:0.8rem;color:var(--text-muted,#888)">Submissions from the website's "Request a Free Energy Audit" form will appear here automatically — make sure <code>server.py</code> is running.</p>
+            </div>
+            <div id="enq-list" class="enq-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ HOME TAB ══ -->
+      <div id="atab-home" class="atab active">
+        <div class="acard">
+          <div class="acard-h open" onclick="toggleAC(this)">🏠 Hero Section<span class="achev">▾</span></div>
+          <div class="acard-b">
+            <div class="r3">
+              <div class="af"><label>Headline Line 1</label><input data-id="e-hero-h1" placeholder="Know Every Watt."></div>
+              <div class="af"><label>Headline Line 2</label><input data-id="e-hero-h2" placeholder="Control Every"></div>
+              <div class="af"><label>Gradient Word</label><input data-id="e-hero-h3" placeholder="Phase."></div>
+            </div>
+            <div class="af"><label>Eyebrow Badge Text</label><input data-id="e-eyebrow" placeholder="LIVE INDUSTRIAL IOT MONITORING"></div>
+            <div class="af"><label>Hero Description</label><textarea data-id="e-hero-desc" rows="3"></textarea></div>
+          </div>
+        </div>
+        <div class="acard">
+          <div class="acard-h" onclick="toggleAC(this)">📋 How It Works — Steps<span class="achev">▾</span></div>
+          <div class="acard-b hide">
+            <div class="r2">
+              <div class="af"><label>Step 1 Title</label><input data-id="e-step1-h" placeholder="Install Sensor Unit"></div>
+              <div class="af"><label>Step 1 Description</label><textarea data-id="e-step1-p" rows="2"></textarea></div>
+            </div>
+            <div class="r2">
+              <div class="af"><label>Step 2 Title</label><input data-id="e-step2-h" placeholder="Edge Data Logger"></div>
+              <div class="af"><label>Step 2 Description</label><textarea data-id="e-step2-p" rows="2"></textarea></div>
+            </div>
+            <div class="r2">
+              <div class="af"><label>Step 3 Title</label><input data-id="e-step3-h" placeholder="Secure Cloud Upload"></div>
+              <div class="af"><label>Step 3 Description</label><textarea data-id="e-step3-p" rows="2"></textarea></div>
+            </div>
+            <div class="r2">
+              <div class="af"><label>Step 4 Title</label><input data-id="e-step4-h" placeholder="Live Dashboard & Alerts"></div>
+              <div class="af"><label>Step 4 Description</label><textarea data-id="e-step4-p" rows="2"></textarea></div>
+            </div>
+          </div>
+        </div>
+        <div class="acard">
+          <div class="acard-h" onclick="toggleAC(this)">📊 Benefits Section<span class="achev">▾</span></div>
+          <div class="acard-b hide">
+            <div class="r2">
+              <div class="af"><label>Section Title</label><textarea data-id="e-ben-title" rows="2"></textarea></div>
+              <div class="af"><label>Section Description</label><textarea data-id="e-ben-sub" rows="2"></textarea></div>
+            </div>
+          </div>
+        </div>
+        <div class="acard">
+          <div class="acard-h" onclick="toggleAC(this)">💬 Testimonials<span class="achev">▾</span></div>
+          <div class="acard-b hide">
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <div style="background:#07101F;border:1px solid rgba(0,87,255,.1);border-radius:8px;padding:12px;">
+                <div class="r3">
+                  <div class="af"><label>Name 1</label><input data-id="e-t1-name" placeholder="Rajesh Kumar"></div>
+                  <div class="af"><label>Role 1</label><input data-id="e-t1-role" placeholder="Electrical Engineer, Aarti Spinning Mills"></div>
+                  <div class="af"><label>Initials</label><input data-id="e-av1" maxlength="2" placeholder="RK" style="text-align:center;font-weight:700;"></div>
+                </div>
+                <div class="af"><label>Quote 1</label><textarea data-id="e-t1-quote" rows="2"></textarea></div>
+              </div>
+              <div style="background:#07101F;border:1px solid rgba(0,87,255,.1);border-radius:8px;padding:12px;">
+                <div class="r3">
+                  <div class="af"><label>Name 2</label><input data-id="e-t2-name" placeholder="Suresh Selvam"></div>
+                  <div class="af"><label>Role 2</label><input data-id="e-t2-role" placeholder="Plant Manager, KPR Mill Ltd"></div>
+                  <div class="af"><label>Initials</label><input data-id="e-av2" maxlength="2" placeholder="SS" style="text-align:center;font-weight:700;"></div>
+                </div>
+                <div class="af"><label>Quote 2</label><textarea data-id="e-t2-quote" rows="2"></textarea></div>
+              </div>
+              <div style="background:#07101F;border:1px solid rgba(0,87,255,.1);border-radius:8px;padding:12px;">
+                <div class="r3">
+                  <div class="af"><label>Name 3</label><input data-id="e-t3-name" placeholder="Venkat Prasad"></div>
+                  <div class="af"><label>Role 3</label><input data-id="e-t3-role" placeholder="Maintenance Head, Jay Jay Mills"></div>
+                  <div class="af"><label>Initials</label><input data-id="e-av3" maxlength="2" placeholder="VP" style="text-align:center;font-weight:700;"></div>
+                </div>
+                <div class="af"><label>Quote 3</label><textarea data-id="e-t3-quote" rows="2"></textarea></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="acard">
+          <div class="acard-h" onclick="toggleAC(this)">🎯 CTA Banner<span class="achev">▾</span></div>
+          <div class="acard-b hide">
+            <div class="af"><label>CTA Headline</label><input data-id="e-cta-h2" placeholder="Ready to Monitor Your First Machine?"></div>
+            <div class="af"><label>CTA Subtext</label><input data-id="e-cta-p" placeholder="Free 30-day pilot..."></div>
+          </div>
+        </div>
+        <div class="acard">
+          <div class="acard-h" onclick="toggleAC(this)">🔻 Footer<span class="achev">▾</span></div>
+          <div class="acard-b hide">
+            <div class="af"><label>Footer Tagline</label><textarea data-id="e-footer-tag" rows="2"></textarea></div>
+            <div class="af"><label>Copyright Line</label><input data-id="e-footer-copy" placeholder="© 2025 PowerGrid Pro..."></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PRODUCTS TAB ══ -->
+      <div id="atab-products" class="atab">
+        <div class="acard">
+          <div class="acard-h open" onclick="toggleAC(this)">📦 Product 1 — PG-3M Energy Logger<span class="achev">▾</span></div>
+          <div class="acard-b">
+            <div class="r2">
+              <div class="af"><label>Name</label><input data-id="e-p1-name" placeholder="PG-3M Energy Logger"></div>
+              <div class="af"><label>Description</label><textarea data-id="e-p1-desc" rows="3"></textarea></div>
+            </div>
+          </div>
+        </div>
+        <div class="acard">
+          <div class="acard-h" onclick="toggleAC(this)">📦 Product 2 — PG-Cloud Gateway<span class="achev">▾</span></div>
+          <div class="acard-b hide">
+            <div class="r2">
+              <div class="af"><label>Name</label><input data-id="e-p2-name" placeholder="PG-Cloud Gateway"></div>
+              <div class="af"><label>Description</label><textarea data-id="e-p2-desc" rows="3"></textarea></div>
+            </div>
+          </div>
+        </div>
+        <div class="acard">
+          <div class="acard-h" onclick="toggleAC(this)">📦 Products 3–6 (Quick Edit)<span class="achev">▾</span></div>
+          <div class="acard-b hide">
+            <div class="atbl-wrap"><table class="atbl">
+              <thead><tr><th>#</th><th>Name</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>P3</td><td><input data-id="e-p3-name" placeholder="PG-Mobile Dashboard"></td><td><input data-id="e-p3-desc" placeholder="Native mobile app..."></td></tr>
+                <tr><td>P4</td><td><input data-id="e-p4-name" placeholder="Earth Fault Monitor"></td><td><input data-id="e-p4-desc" placeholder="Real-time earth leakage..."></td></tr>
+                <tr><td>P5</td><td><input data-id="e-p5-name" placeholder="PG-Analytics Suite"></td><td><input data-id="e-p5-desc" placeholder="Advanced energy analytics..."></td></tr>
+                <tr><td>P6</td><td><input data-id="e-p6-name" placeholder="AMC Service Plan"></td><td><input data-id="e-p6-desc" placeholder="Annual Maintenance..."></td></tr>
+              </tbody>
+            </table></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ FEATURES TAB ══ -->
+      <div id="atab-features" class="atab">
+        <div class="acard">
+          <div class="acard-h open" onclick="toggleAC(this)">⚡ Feature Cards — All 6 <span class="achev">▾</span></div>
+          <div class="acard-b">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div style="background:#07101F;border:1px solid rgba(0,87,255,.1);border-radius:8px;padding:12px;">
+                <div class="af"><label>F1 Title</label><input data-id="e-f1-title" placeholder="Real-Time Voltage Monitoring"></div>
+                <div class="af"><label>F1 Description</label><textarea data-id="e-f1-desc" rows="2"></textarea></div>
+              </div>
+              <div style="background:#07101F;border:1px solid rgba(0,87,255,.1);border-radius:8px;padding:12px;">
+                <div class="af"><label>F2 Title</label><input data-id="e-f2-title" placeholder="Current Monitoring"></div>
+                <div class="af"><label>F2 Description</label><textarea data-id="e-f2-desc" rows="2"></textarea></div>
+              </div>
+              <div style="background:#07101F;border:1px solid rgba(0,87,255,.1);border-radius:8px;padding:12px;">
+                <div class="af"><label>F3 Title</label><input data-id="e-f3-title" placeholder="Power Monitoring"></div>
+                <div class="af"><label>F3 Description</label><textarea data-id="e-f3-desc" rows="2"></textarea></div>
+              </div>
+              <div style="background:#07101F;border:1px solid rgba(0,87,255,.1);border-radius:8px;padding:12px;">
+                <div class="af"><label>F4 Title</label><input data-id="e-f4-title" placeholder="Energy Consumption"></div>
+                <div class="af"><label>F4 Description</label><textarea data-id="e-f4-desc" rows="2"></textarea></div>
+              </div>
+              <div style="background:#07101F;border:1px solid rgba(0,87,255,.1);border-radius:8px;padding:12px;">
+                <div class="af"><label>F5 Title</label><input data-id="e-f5-title" placeholder="Electricity Bill Monitoring"></div>
+                <div class="af"><label>F5 Description</label><textarea data-id="e-f5-desc" rows="2"></textarea></div>
+              </div>
+              <div style="background:#07101F;border:1px solid rgba(0,87,255,.1);border-radius:8px;padding:12px;">
+                <div class="af"><label>F6 Title</label><input data-id="e-f6-title" placeholder="Cloud Dashboard & Mobile App"></div>
+                <div class="af"><label>F6 Description</label><textarea data-id="e-f6-desc" rows="2"></textarea></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PRICING TAB ══ -->
+      <div id="atab-pricing" class="atab">
+        <div class="acard">
+          <div class="acard-h open" onclick="toggleAC(this)">💰 Plan Prices <span class="abadge ab-g">LIVE UPDATE</span><span class="achev">▾</span></div>
+          <div class="acard-b">
+            <div class="atbl-wrap"><table class="atbl">
+              <thead><tr><th>Plan</th><th>Monthly ₹</th><th>Annual ₹/mo</th><th>Plan Description</th></tr></thead>
+              <tbody>
+                <tr><td>Starter</td><td><input id="p1-mo" type="number" value="1999" oninput="livePrice('p-starter',this.value)"></td><td><input id="p1-an" type="number" value="1599"></td><td><input data-id="e-plan1-desc" placeholder="Perfect for small mills..."></td></tr>
+                <tr><td style="color:#3D7EFF;">Pro ⭐</td><td><input id="p2-mo" type="number" value="3499" oninput="livePrice('p-pro',this.value)"></td><td><input id="p2-an" type="number" value="2799"></td><td><input data-id="e-plan2-desc" placeholder="Complete monitoring suite..."></td></tr>
+                <tr><td style="color:#00D68F;">Enterprise</td><td><input id="p3-mo" type="number" value="5999" oninput="livePrice('p-ent',this.value)"></td><td><input id="p3-an" type="number" value="4799"></td><td><input data-id="e-plan3-desc" placeholder="For large mills 20+ machines..."></td></tr>
+              </tbody>
+            </table></div>
+            <div class="anote">💡 Monthly price updates on the Pricing page instantly. Annual applies when user clicks "Annual" tab.</div>
+          </div>
+        </div>
+        <div class="acard">
+          <div class="acard-h" onclick="toggleAC(this)">❓ FAQ Answers<span class="achev">▾</span></div>
+          <div class="acard-b hide">
+            <div class="af"><label>FAQ 1 — Hardware cost included?</label><textarea data-id="e-faq1" rows="2"></textarea></div>
+            <div class="af"><label>FAQ 2 — Free trial?</label><textarea data-id="e-faq2" rows="2"></textarea></div>
+            <div class="af"><label>FAQ 3 — Per machine definition?</label><textarea data-id="e-faq3" rows="2"></textarea></div>
+            <div class="af"><label>FAQ 4 — GST invoicing?</label><textarea data-id="e-faq4" rows="2"></textarea></div>
+            <div class="af"><label>FAQ 5 — Data on cancellation?</label><textarea data-id="e-faq5" rows="2"></textarea></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ CONTACT TAB ══ -->
+      <div id="atab-contact" class="atab">
+        <div class="acard">
+          <div class="acard-h open" onclick="toggleAC(this)">📍 Contact Details<span class="achev">▾</span></div>
+          <div class="acard-b">
+            <div class="r2">
+              <div class="af"><label>Phone Number</label><input data-id="e-con-phone" placeholder="+91 98765 43210"></div>
+              <div class="af"><label>Phone Hours</label><input data-id="e-con-hours" placeholder="Mon–Sat, 8:00 AM – 8:00 PM IST"></div>
+            </div>
+            <div class="r2">
+              <div class="af"><label>WhatsApp Number</label><input data-id="e-con-wa" placeholder="+91 98765 43210"></div>
+              <div class="af"><label>WhatsApp Note</label><input data-id="e-con-wa-sub" placeholder="24×7 support for existing customers"></div>
+            </div>
+            <div class="r2">
+              <div class="af"><label>Email Address</label><input data-id="e-con-email" placeholder="sales@powergridpro.in"></div>
+              <div class="af"><label>Office Address Line 1</label><input data-id="e-con-addr1" placeholder="TIDEL Park, Coimbatore"></div>
+            </div>
+            <div class="af"><label>Address Line 2 / Pincode</label><input data-id="e-con-addr2" placeholder="Tamil Nadu 641014 — Walk-ins welcome"></div>
+          </div>
+        </div>
+        <div class="acard">
+          <div class="acard-h" onclick="toggleAC(this)">📝 Contact Form Texts<span class="achev">▾</span></div>
+          <div class="acard-b hide">
+            <div class="af"><label>Form Title</label><input data-id="e-form-title" placeholder="Request a Free Energy Audit"></div>
+            <div class="af"><label>Form Subtitle</label><textarea data-id="e-form-sub" rows="2"></textarea></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ BRAND TAB ══ -->
+      <div id="atab-brand" class="atab">
+        <div class="acard">
+          <div class="acard-h open" onclick="toggleAC(this)">🎨 Theme Colors <span class="abadge ab-g">LIVE</span><span class="achev">▾</span></div>
+          <div class="acard-b">
+            <p style="font-size:.75rem;color:#8499CC;margin-bottom:14px;">Pick a color — applies to the entire website instantly.</p>
+            <div class="clr-grid">
+              <div class="clrpk"><span>Primary Blue</span><input type="color" id="clr--blue-500" value="#0057FF" oninput="liveColor('--blue-500',this.value)"><div class="clrval" id="clrv--blue-500">#0057FF</div></div>
+              <div class="clrpk"><span>Accent Blue</span><input type="color" id="clr--blue-400" value="#3D7EFF" oninput="liveColor('--blue-400',this.value)"><div class="clrval" id="clrv--blue-400">#3D7EFF</div></div>
+              <div class="clrpk"><span>Primary Green</span><input type="color" id="clr--green-500" value="#00D68F" oninput="liveColor('--green-500',this.value)"><div class="clrval" id="clrv--green-500">#00D68F</div></div>
+              <div class="clrpk"><span>Accent Green</span><input type="color" id="clr--green-400" value="#2EEDB5" oninput="liveColor('--green-400',this.value)"><div class="clrval" id="clrv--green-400">#2EEDB5</div></div>
+              <div class="clrpk"><span>Amber</span><input type="color" id="clr--amber" value="#FFB800" oninput="liveColor('--amber',this.value)"><div class="clrval" id="clrv--amber">#FFB800</div></div>
+              <div class="clrpk"><span>Error Red</span><input type="color" id="clr--red" value="#FF3B3B" oninput="liveColor('--red',this.value)"><div class="clrval" id="clrv--red">#FF3B3B</div></div>
+              <div class="clrpk"><span>BG Dark</span><input type="color" id="clr--bg-dark" value="#0A0F1E" oninput="liveColor('--bg-dark',this.value)"><div class="clrval" id="clrv--bg-dark">#0A0F1E</div></div>
+              <div class="clrpk"><span>BG Card</span><input type="color" id="clr--bg-card" value="#0E1628" oninput="liveColor('--bg-card',this.value)"><div class="clrval" id="clrv--bg-card">#0E1628</div></div>
+              <div class="clrpk"><span>BG Panel</span><input type="color" id="clr--bg-panel" value="#121D35" oninput="liveColor('--bg-panel',this.value)"><div class="clrval" id="clrv--bg-panel">#121D35</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ WHATSAPP TAB ══ -->
+      <div id="atab-whatsapp" class="atab">
+        <div class="acard">
+          <div class="acard-h open" onclick="toggleAC(this)">💬 WhatsApp FAB Button<span class="achev">▾</span></div>
+          <div class="acard-b">
+            <div class="af"><label>Phone Number (with country code, no +)</label><input id="wa-num" type="tel" value="919876543210" oninput="liveWa()"></div>
+            <div class="af"><label>Pre-filled Message</label><textarea id="wa-msg" rows="2" oninput="liveWa()">Hi, I am interested in PowerGrid Pro Energy Monitoring System</textarea></div>
+            <div class="af"><label>Generated WhatsApp Link</label><input id="wa-out" readonly style="color:#00D68F;font-family:monospace;font-size:.72rem;"></div>
+            <div style="display:flex;gap:10px;margin-top:10px;">
+            <div class="anote">💡 The button preview controls aren't available in the split admin panel — open <code>website.html</code> in another tab to see the live site.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end adm-body -->
+    <div class="adm-bottom-bar">
+      <button class="at-btn at-preview" onclick="previewSite()" title="Open live site in new tab">👁 Preview Site</button>
+      <button class="at-btn at-reset" onclick="admReset()" title="Reset all content to defaults">↺ Reset</button>
+      <button class="at-btn at-save" id="save-btn" onclick="admSave()" title="Save all changes (Ctrl+S)">💾 Save Changes</button>
+    </div>
+  </div><!-- end adm-main -->
+</div><!-- end adm-shell -->
+<script>
+/* ═══════════════════════════════════
+   SIDEBAR MOBILE TOGGLE
+═══════════════════════════════════ */
+function toggleSidebar(){
+  const sb=document.querySelector('.adm-sb');
+  const ov=document.getElementById('adm-sb-overlay');
+  const open=sb.classList.toggle('open');
+  ov.classList.toggle('show',open);
+}
+function closeSidebar(){
+  document.querySelector('.adm-sb').classList.remove('open');
+  document.getElementById('adm-sb-overlay').classList.remove('show');
+}
+
+/* ═══════════════════════════════════
+   CONSTANTS
+═══════════════════════════════════ */
+const COLORS = ['--blue-500','--blue-400','--green-500','--green-400','--amber','--red','--bg-dark','--bg-card','--bg-panel'];
+const TABS = {
+  enquiries:['Customer Enquiries','Leads submitted from the "Request a Free Energy Audit" form'],
+  home:     ['Home Page',    'Edit hero, steps, testimonials, CTA, footer'],
+  products: ['Products',     'Edit all 6 product names and descriptions'],
+  features: ['Features',     'Edit all 6 feature card titles and descriptions'],
+  pricing:  ['Pricing',      'Edit plan prices, plan descriptions, FAQ answers'],
+  contact:  ['Contact',      'Edit phone, email, address, form texts'],
+  brand:    ['Brand & Colors','Live color theme editor'],
+  whatsapp: ['WhatsApp FAB', 'Edit WhatsApp number and pre-filled message'],
+};
+
+/* ═══════════════════════════════════
+   AUTH
+═══════════════════════════════════ */
+function admOpenLogin(){
+  document.getElementById('adm-login').classList.add('show');
+  setTimeout(()=>document.getElementById('al-u').focus(),80);
+}
+function admLogin(){
+  const u=document.getElementById('al-u').value.trim();
+  const p=document.getElementById('al-p').value;
+  if(u==='admin'&&p==='admin123'){
+    document.getElementById('adm-login').classList.remove('show');
+    document.getElementById('adm-shell').classList.add('show');
+    document.getElementById('al-err').textContent='';
+    admLoadAll();
+    refreshEnquiryBadge();
+  } else {
+    document.getElementById('al-err').textContent='✗ Incorrect username or password.';
+    document.getElementById('al-p').value='';
+  }
+}
+function admLogout(){
+  document.getElementById('adm-shell').classList.remove('show');
+  document.getElementById('al-u').value='';
+  document.getElementById('al-p').value='';
+}
+
+/* ═══════════════════════════════════
+   TAB SWITCHING
+═══════════════════════════════════ */
+function aTab(id){
+  closeSidebar();
+  document.querySelectorAll('.atab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.anav').forEach(n=>n.classList.remove('active'));
+  const t=document.getElementById('atab-'+id);
+  const n=document.getElementById('anav-'+id);
+  if(t)t.classList.add('active');
+  if(n)n.classList.add('active');
+  const m=TABS[id]||[id,''];
+  document.getElementById('adm-tab-h').textContent=m[0];
+  document.getElementById('adm-tab-s').textContent=m[1];
+  if(id==='enquiries') loadEnquiries();
+}
+
+/* ═══════════════════════════════════
+   CARD COLLAPSE
+═══════════════════════════════════ */
+function toggleAC(h){
+  const b=h.nextElementSibling;
+  const open=h.classList.contains('open');
+  h.classList.toggle('open',!open);
+  b.classList.toggle('hide',open);
+}
+
+/* ═══════════════════════════════════
+   COLOR SWATCH LABEL (no live page here —
+   website.html shows the real preview)
+═══════════════════════════════════ */
+function liveColor(name,val){
+  const lbl=document.getElementById('clrv'+name);
+  if(lbl) lbl.textContent=val;
+}
+
+/* Harmless no-ops: these existed in the single-file version to update
+   a live page preview. There's no embedded page here anymore — open
+   website.html in another tab/device to see real results. */
+function livePrice(){ /* no-op in split admin */ }
+function toggleWa(){ /* no-op in split admin */ }
+
+function liveWa(){
+  const num=(document.getElementById('wa-num')||{}).value||'919876543210';
+  const msg=encodeURIComponent((document.getElementById('wa-msg')||{}).value||'');
+  const out=document.getElementById('wa-out');
+  if(out) out.value='https://wa.me/'+num.replace(/\D/g,'')+'?text='+msg;
+}
+
+/* ═══════════════════════════════════
+   SERVER SAVE / LOAD
+   Talks to server.py over the network so every device on the
+   same WiFi sees the same content — not just this browser.
+═══════════════════════════════════ */
+/* ── build content object from all admin fields ── */
+function buildContentData(){
+  const data={text:{},colors:{},prices:{},wa:{}};
+  document.querySelectorAll('[data-id]').forEach(inp=>{
+    data.text[inp.getAttribute('data-id')]=inp.value;
+  });
+  (window.COLORS||[]).forEach(c=>{
+    const inp=document.getElementById('clr'+c);
+    if(inp) data.colors[c]=inp.value;
+  });
+  ['p1-mo','p1-an','p2-mo','p2-an','p3-mo','p3-an'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) data.prices[id]=el.value;
+  });
+  data.wa.num=(document.getElementById('wa-num')||{}).value||'';
+  data.wa.msg=(document.getElementById('wa-msg')||{}).value||'';
+  return data;
+}
+
+/* ── detect whether we are running via server.py or file:// ── */
+function isServerMode(){
+  return location.protocol==='http:'||location.protocol==='https:';
+}
+
+/* ── open preview: server mode = same origin /website.html, file mode = relative ── */
+function previewSite(){
+  const url = isServerMode()
+    ? location.origin + '/website.html'
+    : 'website.html';
+  window.open(url,'_blank');
+}
+
+async function admSave(){
+  const btn=document.getElementById('save-btn');
+  if(btn){btn.disabled=true;btn.textContent='⏳ Saving…';btn.style.opacity='.7';}
+
+  const data = buildContentData();
+
+  if(!isServerMode()){
+    /* FILE MODE — save to localStorage so website.html can read it */
+    try{
+      localStorage.setItem('pgContent', JSON.stringify(data));
+      showToast('✅ Saved locally! Open website.html in the same browser to see changes.',false);
+      if(btn){btn.textContent='✅ Saved!';btn.disabled=false;btn.style.opacity='1';
+        setTimeout(()=>{btn.textContent='💾 Save Changes';},2200);}
+    }catch(e){
+      showToast('⚠️ localStorage save failed: '+e.message,true);
+      if(btn){btn.textContent='💾 Save Changes';btn.disabled=false;btn.style.opacity='1';}
+    }
+    return;
+  }
+
+  /* SERVER MODE — POST to server.py */
+  try{
+    const res=await fetch('/api/content',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(data)
+    });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    showToast('✅ Saved! All devices on this WiFi will see the update.',false);
+    if(btn){btn.textContent='✅ Saved!';btn.disabled=false;btn.style.opacity='1';
+      setTimeout(()=>{btn.textContent='💾 Save Changes';},2200);}
+  }catch(e){
+    /* fallback to localStorage if server unreachable */
+    try{
+      localStorage.setItem('pgContent', JSON.stringify(data));
+      showToast('⚠️ Server unreachable — saved locally instead. Start server.py for network sync.',true);
+    }catch(_){}
+    if(btn){btn.textContent='💾 Save Changes';btn.disabled=false;btn.style.opacity='1';}
+  }
+}
+
+async function admLoadAll(){
+  let saved = null;
+  if(isServerMode()){
+    try{
+      const res=await fetch('/api/content',{cache:'no-store'});
+      if(res.ok) saved=await res.json();
+    }catch(e){}
+  }
+  /* fallback: localStorage (works in file:// mode too) */
+  if(!saved || Object.keys(saved).length===0){
+    try{
+      const raw=localStorage.getItem('pgContent');
+      if(raw) saved=JSON.parse(raw);
+    }catch(_){}
+  }
+  if(!saved){
+    if(!isServerMode()) showToast('💡 File mode — edits save locally in this browser.',false);
+    else showToast('⚠️ Could not reach server.py — start it and reload.',true);
+    return;
+  }
+
+  if(saved.text){
+    Object.keys(saved.text).forEach(id=>{
+      const inp=document.querySelector('[data-id="'+id+'"]');
+      if(inp) inp.value=saved.text[id];
+    });
+  }
+  if(saved.colors){
+    Object.keys(saved.colors).forEach(name=>{
+      const inp=document.getElementById('clr'+name);
+      if(inp){ inp.value=saved.colors[name]; liveColor(name,saved.colors[name]); }
+    });
+  }
+  if(saved.prices){
+    Object.keys(saved.prices).forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) el.value=saved.prices[id];
+    });
+  }
+  if(saved.wa){
+    const wn=document.getElementById('wa-num'),wm=document.getElementById('wa-msg');
+    if(wn&&saved.wa.num) wn.value=saved.wa.num;
+    if(wm&&saved.wa.msg) wm.value=saved.wa.msg;
+    liveWa();
+  }
+}
+
+/* ═══════════════════════════════════
+   RESET
+═══════════════════════════════════ */
+async function admReset(){
+  if(!confirm('Reset ALL content to original defaults?\nThis cannot be undone.')) return;
+  /* always clear localStorage */
+  try{ localStorage.removeItem('pgContent'); }catch(_){}
+  if(isServerMode()){
+    try{
+      await fetch('/api/content',{method:'DELETE'});
+      showToast('✅ Reset on server. Reloading…',false);
+    }catch(e){
+      showToast('⚠️ Server reset failed: '+e.message+' — local data cleared.',true);
+    }
+  } else {
+    showToast('✅ Reset locally. Reloading…',false);
+  }
+  document.querySelectorAll('[data-id]').forEach(inp=>inp.value='');
+  document.querySelectorAll('.atbl input,#wa-num,#wa-msg').forEach(inp=>{ if(inp.type!=='color') inp.value=''; });
+  setTimeout(()=>location.reload(),900);
+}
+
+/* ═══════════════════════════════════
+   TOAST
+═══════════════════════════════════ */
+let _tt=null;
+/* ═══════════════════════════════════
+   CUSTOMER ENQUIRIES
+   Reads leads saved by server.py from
+   the website's "Request a Free Energy
+   Audit" form (POST /api/enquiries).
+   File mode (double-click admin.html,
+   no server.py running) can't reach
+   this data — it's saved on disk by
+   the Python server, not the browser.
+═══════════════════════════════════ */
+let _enquiriesCache = [];
+
+function escapeHtmlEnq(str){
+  const d=document.createElement('div');
+  d.textContent = str==null ? '' : String(str);
+  return d.innerHTML;
+}
+
+function timeAgoEnq(iso){
+  if(!iso) return '';
+  const then = new Date(iso).getTime();
+  if(isNaN(then)) return iso;
+  const diffMin = Math.round((Date.now()-then)/60000);
+  if(diffMin < 1) return 'just now';
+  if(diffMin < 60) return diffMin+'m ago';
+  const diffHr = Math.round(diffMin/60);
+  if(diffHr < 24) return diffHr+'h ago';
+  const diffDay = Math.round(diffHr/24);
+  return diffDay+'d ago';
+}
+
+async function loadEnquiries(){
+  const listEl = document.getElementById('enq-list');
+  const emptyEl = document.getElementById('enq-empty');
+  const statsEl = document.getElementById('enq-stats');
+  if(!listEl) return;
+
+  if(!isServerMode()){
+    listEl.innerHTML='';
+    emptyEl.style.display='block';
+    emptyEl.querySelector('p:nth-child(2)') && (emptyEl.querySelector('p:nth-child(2)').innerHTML =
+      'You opened this file directly (file:// mode), so it can\'t reach the server. Run <code>server.py</code> and open admin.html from <code>http://localhost:8000/admin.html</code> instead.');
+    statsEl.textContent='Server not running';
+    refreshEnquiryBadge();
+    return;
+  }
+
+  statsEl.textContent='Loading…';
+  try{
+    const res = await fetch('/api/enquiries',{cache:'no-store'});
+    if(!res.ok) throw new Error('bad response');
+    _enquiriesCache = await res.json();
+  }catch(e){
+    statsEl.textContent='Could not load enquiries';
+    showToast('⚠️ Could not reach server.py for enquiries — make sure it\'s running.', true);
+    return;
+  }
+
+  renderEnquiries();
+  refreshEnquiryBadge();
+}
+
+function renderEnquiries(){
+  const listEl = document.getElementById('enq-list');
+  const emptyEl = document.getElementById('enq-empty');
+  const statsEl = document.getElementById('enq-stats');
+  if(!listEl) return;
+
+  if(!_enquiriesCache || _enquiriesCache.length===0){
+    listEl.innerHTML='';
+    emptyEl.style.display='block';
+    statsEl.textContent='0 enquiries';
+    return;
+  }
+  emptyEl.style.display='none';
+
+  const newCount = _enquiriesCache.filter(e=>e.status==='new').length;
+  statsEl.innerHTML = '<strong>'+_enquiriesCache.length+'</strong> total &nbsp;·&nbsp; <strong>'+newCount+'</strong> new';
+
+  listEl.innerHTML = _enquiriesCache.map(e=>{
+    const waNum = (e.phone||'').replace(/\D/g,'');
+    const waMsg = encodeURIComponent('Hi '+(e.name||'')+', this is PowerGrid Pro — following up on your energy audit request.');
+    return `
+      <div class="enq-card status-${escapeHtmlEnq(e.status||'new')}">
+        <div class="enq-card-top">
+          <div>
+            <div class="enq-name">${escapeHtmlEnq(e.name)}</div>
+            ${e.company ? `<div class="enq-company">${escapeHtmlEnq(e.company)}</div>` : ''}
+          </div>
+          <div class="enq-time">${escapeHtmlEnq(timeAgoEnq(e.submittedAt))}</div>
+        </div>
+        <div class="enq-grid">
+          <div class="enq-field"><div class="enq-field-label">Phone</div><div class="enq-field-val">${escapeHtmlEnq(e.phone)||'—'}</div></div>
+          <div class="enq-field"><div class="enq-field-label">Email</div><div class="enq-field-val">${escapeHtmlEnq(e.email)||'—'}</div></div>
+          <div class="enq-field"><div class="enq-field-label">City</div><div class="enq-field-val">${escapeHtmlEnq(e.city)||'—'}</div></div>
+          <div class="enq-field"><div class="enq-field-label">Machines</div><div class="enq-field-val">${escapeHtmlEnq(e.machines)||'—'}</div></div>
+        </div>
+        ${e.message ? `<div class="enq-msg">${escapeHtmlEnq(e.message)}</div>` : ''}
+        <div class="enq-card-actions">
+          <select class="enq-status-select" onchange="updateEnquiryStatus('${e.id}', this.value)">
+            <option value="new" ${e.status==='new'?'selected':''}>🆕 New</option>
+            <option value="contacted" ${e.status==='contacted'?'selected':''}>📞 Contacted</option>
+            <option value="closed" ${e.status==='closed'?'selected':''}>✅ Closed</option>
+          </select>
+          ${waNum ? `<a class="enq-link wa" href="https://wa.me/${waNum}?text=${waMsg}" target="_blank">💬 WhatsApp</a>` : ''}
+          ${e.phone ? `<a class="enq-link" href="tel:${escapeHtmlEnq(e.phone)}">📞 Call</a>` : ''}
+          <button class="enq-del" onclick="deleteEnquiry('${e.id}')">🗑 Delete</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function updateEnquiryStatus(id, status){
+  try{
+    const res = await fetch('/api/enquiries/status',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({id, status}),
+    });
+    if(!res.ok) throw new Error('failed');
+    const item = _enquiriesCache.find(e=>e.id===id);
+    if(item) item.status = status;
+    renderEnquiries();
+    showToast('✓ Status updated', false);
+  }catch(e){
+    showToast('⚠️ Could not update status', true);
+  }
+}
+
+async function deleteEnquiry(id){
+  if(!confirm('Delete this enquiry? This cannot be undone.')) return;
+  try{
+    const res = await fetch('/api/enquiries?id='+encodeURIComponent(id),{method:'DELETE'});
+    if(!res.ok) throw new Error('failed');
+    _enquiriesCache = _enquiriesCache.filter(e=>e.id!==id);
+    renderEnquiries();
+    refreshEnquiryBadge();
+    showToast('✓ Enquiry deleted', false);
+  }catch(e){
+    showToast('⚠️ Could not delete enquiry', true);
+  }
+}
+
+async function clearAllEnquiries(){
+  if(!_enquiriesCache.length){ showToast('Nothing to clear', false); return; }
+  if(!confirm('Delete ALL '+_enquiriesCache.length+' enquiries? This cannot be undone.')) return;
+  try{
+    const res = await fetch('/api/enquiries',{method:'DELETE'});
+    if(!res.ok) throw new Error('failed');
+    _enquiriesCache = [];
+    renderEnquiries();
+    refreshEnquiryBadge();
+    showToast('✓ All enquiries cleared', false);
+  }catch(e){
+    showToast('⚠️ Could not clear enquiries', true);
+  }
+}
+
+async function refreshEnquiryBadge(){
+  const badge = document.getElementById('enq-nav-badge');
+  if(!badge) return;
+  if(!isServerMode()){ badge.style.display='none'; return; }
+  let list = _enquiriesCache;
+  if(!list || list.length===0){
+    try{
+      const res = await fetch('/api/enquiries',{cache:'no-store'});
+      if(res.ok) list = await res.json();
+    }catch(e){ list = []; }
+  }
+  const newCount = (list||[]).filter(e=>e.status==='new').length;
+  if(newCount>0){ badge.textContent=newCount; badge.style.display='inline-block'; }
+  else { badge.style.display='none'; }
+}
+
+function showToast(msg,err){
+  const t=document.getElementById('adm-toast');
+  if(!t)return;
+  if(_tt){clearTimeout(_tt);_tt=null;}
+  t.textContent=msg;
+  t.style.background=err?'#FF3B3B':'#00D68F';
+  t.style.color=err?'#fff':'#0A0F1E';
+  t.style.display='block';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>t.style.opacity='1'));
+  _tt=setTimeout(()=>{
+    t.style.opacity='0';
+    setTimeout(()=>{t.style.display='none';_tt=null;},350);
+  },err?5000:2800);
+}
+
+/* ═══════════════════════════════════
+   KEYBOARD SHORTCUT Ctrl+S
+═══════════════════════════════════ */
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key==='s'){
+    e.preventDefault();
+    admSave();
+  }
+  if(e.key==='Escape'){
+    if(document.getElementById('adm-login').classList.contains('show')){
+      document.getElementById('adm-login').classList.remove('show');
+    }
+  }
+});
+
+/* ═══════════════════════════════════
+   ON PAGE LOAD — open the login box
+   automatically since this whole page
+   IS the admin panel now.
+═══════════════════════════════════ */
+document.addEventListener('DOMContentLoaded',()=>{
+  admOpenLogin();
+});
+</script>
+
+<!-- Toast notification element (was missing — showToast() needs this) -->
+<div id="adm-toast" role="status" aria-live="polite"></div>
+
+</body>
+</html>

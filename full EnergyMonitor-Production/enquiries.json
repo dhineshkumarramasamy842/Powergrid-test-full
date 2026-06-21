@@ -1,0 +1,38 @@
+[
+  {
+    "id": "766b1442e4",
+    "name": "kumar",
+    "company": "kpt",
+    "phone": "941548",
+    "email": "",
+    "city": "",
+    "machines": "",
+    "message": "",
+    "status": "new",
+    "submittedAt": "2026-06-21T21:54:27"
+  },
+  {
+    "id": "a53dd0c840",
+    "name": "Dhineshkumar Ramasamy",
+    "company": "jayjay",
+    "phone": "956841265",
+    "email": "dhineshkumar.ramasamy842@gmail.com",
+    "city": "Salem",
+    "machines": "1–5 machines",
+    "message": "",
+    "status": "new",
+    "submittedAt": "2026-06-21T21:45:34"
+  },
+  {
+    "id": "ee3629d626",
+    "name": "sdv",
+    "company": "sdv",
+    "phone": "sdv",
+    "email": "dhineshkumar.ramasamy842@gmail.com",
+    "city": "Tirupur",
+    "machines": "1–5 machines",
+    "message": "",
+    "status": "new",
+    "submittedAt": "2026-06-21T21:42:25"
+  }
+]
